@@ -1,4 +1,8 @@
-gtkmmWindowExample: gtkmmWindowExample.cpp
-	g++ -std=c++14 `pkg-config --cflags --libs gtk+-3.0` `pkg-config --cflags --libs gtkmm-3.0` -o gtkmmWindowExample gtkmmWindowExample.cpp
+
+main: main.cpp MyArea.o
+	g++ -std=c++14 `pkg-config --cflags --libs gtkmm-3.0` -o main main.cpp MyArea.o
+MyArea.o: MyArea.cpp
+	g++ -std=c++14 `pkg-config --cflags --libs gtkmm-3.0` -c MyArea.cpp
+
 clean:
-	rm gtkmmWindowExample
+	rm main MyArea.o
