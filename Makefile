@@ -13,5 +13,9 @@ vec4.o: vec4.cpp
 
 light.o: light.cpp
 	g++ -std=c++14 -c light.cpp
+makefiletest:
+	echo "this is in Makefile"
+
 clean:
 	rm MyArea.o fractal.o main lightingtest vec4.o light.o
+

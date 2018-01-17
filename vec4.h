@@ -19,17 +19,17 @@ class Vec4{
   friend Vec4 operator-(Vec4 vec1, Vec4 vec2);
 
   //normalizes w to 1 then takes the cross product over x,y,z
-  Vec4 cross( Vec4 vec2);
+  Vec4 cross( Vec4 vec2) const;
   // scales down by w
   void normalize_w ();
   // normalizes and takes the dot product
-  int dot(Vec4 vec2);
+  int dot(Vec4 vec2) const;
   //copies
-  Vec4 copy();
+  Vec4 copy() const;
   //scale
   void scale(int f);
   //magnitude, ignoring w
-  int magnitude();
+  int magnitude() const;
 };
 
 
@@ -48,20 +48,20 @@ class Vec4f{
 
   friend Vec4f operator-(Vec4f vec1, Vec4f vec2);
   //normalizes w to 1 then takes the cross product over x,y,z                                                                                                   
-  Vec4f cross( Vec4f vec2);
+  Vec4f cross( Vec4f vec2) const;
   // scales down by w
   void normalize_w ();
   // scales down by magnitude
   void normalize();
 
   // normalizes and takes the dot product  
-  double dot(Vec4f vec2);
+  double dot(Vec4f vec2) const;
   //copies                                                                                                                                                      
-  Vec4f copy();
+  Vec4f copy() const;
   //scale         
   void scale(double f);
   //magnitude, ignoring w
-  double magnitude();
+  double magnitude() const;
 };
 
 #endif

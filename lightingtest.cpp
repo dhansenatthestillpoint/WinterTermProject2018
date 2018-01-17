@@ -4,7 +4,7 @@
 #include<math.h>
 
 
-void doop(){  
+int main(){  
   const Light * sun1 = new PointSource( Vec4f (0,0,30), 100, 255, 0, 255);
   const Light *  sun2 = new  PointSource(Vec4f (0.0,50.0,-30.0),50, 0, 255, 155);
   const Light * lighting = light::add(sun1, sun2); 
@@ -26,6 +26,4 @@ void doop(){
   delete lighting;
   
 }
-int main(){
-  doop();
-}
+

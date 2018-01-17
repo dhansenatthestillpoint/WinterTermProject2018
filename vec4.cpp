@@ -27,12 +27,12 @@ Vec4 operator-(Vec4 vec1, Vec4 vec2){
 
 }
 
-Vec4 Vec4::copy(){
+Vec4 Vec4::copy() const{
   return Vec4(this->x, this->y, this->z, this->w);
 }
 
 //normalizes w to 1 then takes the cross product over x,y,z                                                                                                   
-Vec4 Vec4::cross( Vec4 vec2){
+Vec4 Vec4::cross( Vec4 vec2) const{
   Vec4 a= this->copy();
   a.normalize_w();
   Vec4 b= vec2.copy();
@@ -48,7 +48,7 @@ void Vec4::normalize_w (){
 
 
 // normalizes and takes the dot product over x, y, z.
-int Vec4::dot( Vec4 vec2){
+int Vec4::dot( Vec4 vec2)const{
   Vec4 a= this->copy();
   a.normalize_w();
   Vec4 b= vec2.copy();
@@ -63,7 +63,7 @@ void Vec4::scale(int f){
 }
 
 //magintude in 3d
-int  Vec4::magnitude(){
+int  Vec4::magnitude() const{
   return (int)sqrt(pow(this->x,2) + pow(this->y,2)+pow(this->z, 2));
 }
 
@@ -98,12 +98,12 @@ Vec4f operator-(Vec4f vec1, Vec4f vec2){
 }
 
 //returns a copy of the current vector
-Vec4f Vec4f::copy(){
+Vec4f Vec4f::copy() const{
   return Vec4f(this->x, this->y, this->z, this->w);
 }
 
 //normalizes w to 1 then takes the cross product over x,y,z                                                                                                   
-Vec4f Vec4f::cross( Vec4f vec2){
+Vec4f Vec4f::cross( Vec4f vec2) const{
   Vec4f a= this->copy();
   a.normalize_w();
   Vec4f b= vec2.copy();
@@ -126,7 +126,7 @@ void Vec4f:: normalize(){
 }
 // normalizes and takes the dot product over x, y, z.
 
-double Vec4f::dot( Vec4f vec2){
+double Vec4f::dot( Vec4f vec2)const{
   Vec4f a= this->copy();
   a.normalize_w();
   Vec4f b= vec2.copy();
@@ -141,6 +141,6 @@ void Vec4f::scale(double f){
 }
 
 
-double Vec4f::magnitude(){
+double Vec4f::magnitude()const{
   return sqrt(pow(this->x,2) + pow(this->y,2)+pow(this->z, 2));
 }

@@ -56,19 +56,21 @@ class DirectionalSource: public Light{
  public:
   unsigned char * color;
   DirectionalSource();
-  DirectionalSource(Vec4f angle, double brightness, unsigned char r, unsigned char b, unsigned char g);
+  DirectionalSource(Vec4f angle, double brightness,  int r, int  b, int g);
   std::tuple<double, unsigned char *> operator()(Vec4f pos, Vec4f angle) const;
-
+  ~DirectionalSource();
 };
-/*
+
 class UniformSource: public Light{
  private:
   double brightness;
  public:
   unsigned char * color;
- 
-}
-*/
+  UniformSource();
+  UniformSource (double brightness,  int r, int  b, int g);
+  std::tuple<double, unsigned char *> operator()(Vec4f pos, Vec4f angle) const;
+};
+
 namespace light{
   const Light * add ( const Light * L1, const Light * L2);
 }

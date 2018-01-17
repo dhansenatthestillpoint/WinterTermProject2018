@@ -91,7 +91,7 @@ PointSource::PointSource(Vec4f pos, double brightness, int  r, int  b, int  g):
 std::tuple<double, unsigned char *> PointSource::operator()(Vec4f pos, Vec4f angle) const{
 
   Vec4f dir = pos-mpos;
-  double rawstrength = dir.magnitude();
+  double rawstrength = brightness / pow(dir.magnitude(),2);
   dir.scale(-1); //this means that light is strongest when directly opposite the vector produced by a deosil crossproduct of the face. Cause we love that right hand rule
   double angledstrength = std::max(0.0,dir.dot(angle));
   return std::make_tuple(angledstrength, color);
@@ -116,6 +116,36 @@ const Light  *  light::add ( const Light * L1, const Light * L2){
     return new  AddedLight(L1, L2);
 }
 
+DirectionalSource::DirectionalSource():
+  mdir (Vec4f(0.0,0.0,0.0)),
+  brightness (0)
+{
+}
 
 
+DirectionalSource::~DirectionalSource(){
+  if (color){
+    //    printf("Color free: %p , at %p\n",color, this);                                                          
+    free (color);
+  }
+}
 
+
+DirectionalSource::DirectionalSource(Vec4f dir, double brightness, int  r, int  b, int  g):
+  mdir(dir),
+  brightness(brightness)
+{
+  color = (unsigned char*)malloc(4*sizeof(unsigned char));
+  //printf("Point Source Color alloc: %x in %x\n",color, this);                                                    
+  color[0] = (unsigned char)(r%256);
+  color[1]= (unsigned char)(b%256);
+  color[2]=(unsigned char)(g%256);
+
+  mdir.scale(-1); //just get this over with now
+}
+
+
+std::tuple<double, unsigned char *> DirectionalSource::operator()(Vec4f pos, Vec4f angle) const{
+  double angledstrength = std::max(0.0,mdir.dot(angle));
+  return std::make_tuple(angledstrength, color);
+}
