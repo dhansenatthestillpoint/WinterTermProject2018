@@ -1,19 +1,29 @@
 #include "vec4.h"
 #include <stdio.h>
+#include "light.h"
+#include<math.h>
 
 
-int main(){
-  Vec4 a = Vec4(1,2,3);
-  Vec4 b = Vec4(4,5,6);
-  Vec4 added= a+b;
-  Vec4 crossed = a.cross(b);
-  int dotted = a.dot(b);
-  printf("add: %d,%d, %d \n cross: %d, %d, %d\n dot: %d\n", added.x, added.y, added.z, crossed.x, crossed.y, crossed.z, dotted);
+int main(){  
+  const Light * sun1 = new PointSource( Vec4f (0,0,30), 100, 255, 0, 255);
+  const Light *  sun2 = new  PointSource(Vec4f (0.0,50.0,-30.0),50, 0, 255, 155);
+  const Light * lighting = light::add(sun1, sun2); 
+ 
 
-  Vec4f af = Vec4f(1.1,2.2,3.3);
-  Vec4f bf = Vec4f(4.111,5.63,6.3232);
-  Vec4f addedf= af+bf;
-  Vec4f crossedf = af.cross(bf);
-  double dottedf = af.dot(bf);
-  printf("add: %f,%f, %f \n cross: %f, %f, %f\n dot: %f\n", addedf.x, addedf.y, addedf.z, crossedf.x, crossedf.y, crossedf.z, dottedf);
+  for (double t=0.0; t<2*M_PI; t=t+(M_PI/10)){
+    Vec4f pos = Vec4f(t, sin(t), cos(t));
+    Vec4f angle = Vec4f(sin(t), cos(t), 1);
+    //    printf("t:%f\n",t);
+    //printf("lighting %x, sun1: %x , \n",&lighting, &sun1);
+    std::tuple<double, unsigned char *> result = (*lighting)(pos, angle);
+    //std::tuple<double, unsigned char *> result = sun1(pos,angle);
+    printf("%f, %d, %d, %d\n", std::get<0>(result), std::get<1>(result)[0], std::get<1>(result)[1], std::get<1>(result)[2]);
+    //    sun1->~Light();
+    // sun2->~Light();
+    // lighting->~Light();
+    }
+
+  delete lighting;
+  
 }
+
