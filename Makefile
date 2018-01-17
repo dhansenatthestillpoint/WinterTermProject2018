@@ -8,6 +8,10 @@ fractal.o: fractal.cpp
 
 lightingtest: lightingtest.cpp vec4.o
         g++ -std=c++14 lightingtest.cpp -o lightingtest vec4.o
+
+Entity: Entity.cpp Entity.h vec4.o
+	g++ -std=c++14 -o Entity Entity.cpp vec4.o
+
 vec4.o: vec4.cpp
         g++ -std=c++14 -c vec4.cpp 
 clean:
