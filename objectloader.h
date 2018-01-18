@@ -8,22 +8,22 @@
 class Triangle{
  public:
   // array of vertices, of length 3 with a null terminator.
-  vec4f * vertices;
-  vec4f normal; // normal vector.
+  Vec4f * vertices;
+  Vec4f normal; // normal vector.
 
   //constructor, takes in  3 vertices and a normal vector
   // mallocs the instance variable vertices, and assigns values
-  Triangle(vec4f v1, vec4f v2, vec4f v3, vec4f norm);
+  Triangle(Vec4f v1, Vec4f v2, Vec4f v3, Vec4f norm);
   //destructor, frees vertices.
-  ~Triangle()
-}
+  ~Triangle();
+};
 
 
 
 class ObjectMap{
  private:
-  vec4f * vertices;
-  vec4f * normals;
+  Vec4f * vertices;
+  Vec4f * normals;
  public:
   //list of faces
   Triangle * faces;
@@ -46,8 +46,8 @@ class ObjectMap{
 
 
   //destructor, loops over faces, deleting each one (use delete *face;), then frees the whole array. 
-  ~ObjectMap()
-}
+  ~ObjectMap();
+};
 
 
 

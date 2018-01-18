@@ -17,7 +17,9 @@ class Vec4{
   friend Vec4 operator+( Vec4 vec1,  Vec4 vec2);
   //and subtractio
   friend Vec4 operator-(Vec4 vec1, Vec4 vec2);
-
+  //scalar multiplication, not in place
+  friend Vec4 operator * (Vec4 vec1, int f);
+  
   //normalizes w to 1 then takes the cross product over x,y,z
   Vec4 cross( Vec4 vec2) const;
   // scales down by w
@@ -47,6 +49,10 @@ class Vec4f{
   friend Vec4f operator+( Vec4f vec1,  Vec4f vec2);
 
   friend Vec4f operator-(Vec4f vec1, Vec4f vec2);
+
+  //scalar multiplication, not in place                                                                                                        
+  friend Vec4f operator * (Vec4f vec1, double f);
+
   //normalizes w to 1 then takes the cross product over x,y,z                                                                                                   
   Vec4f cross( Vec4f vec2) const;
   // scales down by w

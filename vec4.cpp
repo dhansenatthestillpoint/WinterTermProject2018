@@ -27,6 +27,11 @@ Vec4 operator-(Vec4 vec1, Vec4 vec2){
 
 }
 
+//scalar multiplication, not in place                                                                                                        
+Vec4 operator * (Vec4 vec1, int f){
+  return Vec4(f*vec1.x, f*vec1.y,f*vec1.z);
+}
+
 Vec4 Vec4::copy() const{
   return Vec4(this->x, this->y, this->z, this->w);
 }
@@ -96,6 +101,12 @@ Vec4f operator+(Vec4f vec1,  Vec4f vec2){
 Vec4f operator-(Vec4f vec1, Vec4f vec2){
   return Vec4f(vec1.x-vec2.x, vec1.y-vec2.y, vec1.z-vec2.z, (vec1.w-vec2.w==0 ? 1: vec1.w-vec2.w) );
 }
+
+Vec4f operator * (Vec4f vec1, double f){
+  return Vec4f(f*vec1.x,f*vec1.y,f*vec1.z);
+}
+
+
 
 //returns a copy of the current vector
 Vec4f Vec4f::copy() const{
