@@ -32,6 +32,20 @@ Vec4 operator * (Vec4 vec1, int f){
   return Vec4(f*vec1.x, f*vec1.y,f*vec1.z);
 }
 
+//matrix multiplication
+// in a way that's hard coded, but cuts off a good bit of overhead
+Vec4 operator * (int matrix[4][4], Vec4f vec1){
+  return Vec4 (
+		vec1.x * matrix[0][0] + vec1.y * matrix[0][1] + vec1.z * matrix[0][2] + vec1.w * matrix[0][3],
+		vec1.x * matrix[1][0] + vec1.y * matrix[1][1] + vec1.z * matrix[1][2] + vec1.w * matrix[1][3],
+		vec1.x * matrix[2][0] + vec1.y * matrix[2][1] + vec1.z * matrix[2][2] + vec1.w * matrix[2][3],
+		vec1.x * matrix[3][0] + vec1.y * matrix[3][1] + vec1.z * matrix[3][2] + vec1.w * matrix[3][3]
+		);
+
+}
+
+
+
 Vec4 Vec4::copy() const{
   return Vec4(this->x, this->y, this->z, this->w);
 }
@@ -106,6 +120,18 @@ Vec4f operator * (Vec4f vec1, double f){
   return Vec4f(f*vec1.x,f*vec1.y,f*vec1.z);
 }
 
+//matrix multiplication
+Vec4f operator * ( double matrix[4][4], Vec4f vec1){
+  return Vec4f (
+	       
+		vec1.x * matrix[0][0] + vec1.y * matrix[0][1] + vec1.z * matrix[0][2] + vec1.w * matrix[0][3],
+                vec1.x * matrix[1][0] + vec1.y * matrix[1][1] + vec1.z * matrix[1][2] + vec1.w * matrix[1][3],
+                vec1.x * matrix[2][0] + vec1.y * matrix[2][1] + vec1.z * matrix[2][2] + vec1.w * matrix[2][3],
+                vec1.x * matrix[3][0] + vec1.y * matrix[3][1] + vec1.z * matrix[3][2] + vec1.w * matrix[3][3]
+		
+		);
+
+}
 
 
 //returns a copy of the current vector
@@ -155,3 +181,16 @@ void Vec4f::scale(double f){
 double Vec4f::magnitude()const{
   return sqrt(pow(this->x,2) + pow(this->y,2)+pow(this->z, 2));
 }
+
+/*
+template <typename T, int N> void vectors::matrix_multiply( T matr1[N][N], T matr2[N][N], T result[N][N]){
+  for (int i = 0; i<N; i++){
+    for (int j=0; j<N; j++){
+      result[i][j]=0;
+      for (int k = 0; k<N; k++){
+	result[i][j] = result[i][j] + matr1[i][k]*matr2[k][j];
+      }
+    }
+  }
+}
+*/

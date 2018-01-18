@@ -19,7 +19,8 @@ class Vec4{
   friend Vec4 operator-(Vec4 vec1, Vec4 vec2);
   //scalar multiplication, not in place
   friend Vec4 operator * (Vec4 vec1, int f);
-  
+  //matrix multiplication
+  friend Vec4 operator * (int matrix[4][4], Vec4 vec1);
   //normalizes w to 1 then takes the cross product over x,y,z
   Vec4 cross( Vec4 vec2) const;
   // scales down by w
@@ -53,6 +54,9 @@ class Vec4f{
   //scalar multiplication, not in place                                                                                                        
   friend Vec4f operator * (Vec4f vec1, double f);
 
+  //matrix multiplication                                                                                             
+  friend Vec4f operator * (double matrix[4][4], Vec4f vec1 );
+
   //normalizes w to 1 then takes the cross product over x,y,z                                                                                                   
   Vec4f cross( Vec4f vec2) const;
   // scales down by w
@@ -68,6 +72,21 @@ class Vec4f{
   void scale(double f);
   //magnitude, ignoring w
   double magnitude() const;
+};
+
+namespace vectors{
+  //square matrix multiplication, of numerical type T, and size N x N.
+  template<typename T, int N>  void matrix_multiply( T matr1[N][N], T matr2[N][N], T result[N][N]){
+    for (int i = 0; i<N; i++){
+      for (int j=0; j<N; j++){
+	result[i][j]=0;
+	for (int k = 0; k<N; k++){
+	  result[i][j] = result[i][j] + matr1[i][k]*matr2[k][j];
+	}
+      }
+    }
+    
+  }
 };
 
 #endif

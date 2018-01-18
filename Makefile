@@ -16,6 +16,9 @@ lightingtest: lightingtest.cpp vec4.o light.o
 vec4.o: vec4.cpp
         g++ -std=c++14 -c vec4.cpp 
 
+vectortest: vec4.o vectortest.cpp
+	g++ -std=c++14 vectortest.cpp -o vectortest vec4.o 
+
 light.o: light.cpp
 	g++ -std=c++14 -c light.cpp
 objectloadertest: objectloadertest.cpp objectloader.o vec4.o
@@ -24,5 +27,5 @@ objectloader.o: objectloader.cpp
 	 g++ -std=c++14 -c objectloader.cpp
 
 clean:
-	rm *.o  main lightingtest objectloadertest 
+	rm *.o  main lightingtest objectloadertest vectortest
 
