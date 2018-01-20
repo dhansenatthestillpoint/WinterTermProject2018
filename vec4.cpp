@@ -155,11 +155,12 @@ void Vec4f::normalize_w ()
   this->z= this->z/this->w;
 }
 //scales length to one (ignoring w)
-void Vec4f:: normalize(){
+Vec4f Vec4f::normalize(){
   double magn = sqrt(pow(this->x,2) + pow(this->y,2)+pow(this->z, 2));
   if (magn){
     this->scale(1.0/magn);
   }
+  return (*this);
 }
 // normalizes and takes the dot product over x, y, z.
 

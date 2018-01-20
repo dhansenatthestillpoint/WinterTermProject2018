@@ -2,6 +2,5 @@
 #include "objectloader.h"
 
 int main(){
-  ObjectMap("assets/Ship1p.obj");
-  
+  ObjectMap("assets/Ship1p.obj");  
 }

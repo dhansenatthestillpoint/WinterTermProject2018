@@ -62,7 +62,7 @@ class Vec4f{
   // scales down by w
   void normalize_w ();
   // scales down by magnitude
-  void normalize();
+  Vec4f normalize();
 
   // normalizes and takes the dot product  
   double dot(Vec4f vec2) const;
