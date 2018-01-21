@@ -16,11 +16,16 @@ lightingtest: lightingtest.cpp vec4.o light.o
 vec4.o: vec4.cpp
         g++ -std=c++14 -c vec4.cpp 
 
+vectortest: vec4.o vectortest.cpp
+	g++ -std=c++14 vectortest.cpp -o vectortest vec4.o 
+
 light.o: light.cpp
 	g++ -std=c++14 -c light.cpp
-makefiletest:
-	echo "this is in Makefile"
+objectloadertest: objectloadertest.cpp objectloader.o vec4.o
+	g++  -std=c++14  -o objectloadertest objectloadertest.cpp objectloader.o vec4.o
+objectloader.o: objectloader.cpp
+	 g++ -std=c++14 -c objectloader.cpp
 
 clean:
-	rm MyArea.o fractal.o main lightingtest vec4.o light.o
+	rm *.o  main lightingtest objectloadertest vectortest
 

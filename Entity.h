@@ -1,3 +1,6 @@
+#ifndef ENTITY_H
+#define ENTITY_H
+
 #include "vec4.h"
 #include <stdlib.h>
 
@@ -55,6 +58,6 @@ class ShipClass: public Entity{
   void removeship(int systemcount);
 };
 
-
+#endif
 
 
