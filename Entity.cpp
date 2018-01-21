@@ -1,16 +1,20 @@
 #include "Entity.h"
 
-Entity::Entity(float posx, float posy, float posz, float velx, float vely, float velz, float ang1, float ang2, float ang3, float avel1, float avel2, float avel3):
-posvector(Vec4f(posx, posy, posz)),
-anglevector(Vec4f(ang1, ang2, ang3)),
-velvector(Vec4f(velx, vely, velz)),
-angularvel(Vec4f(avel1, avel2, avel3))
-{
+Entity::Entity(Vec4f inputpos, Vec4f inputvel, Vec4f inputang, Vec4f inputavel):
+  posvector(inputpos.x, inputpos.y, inputpos.z),
+  velvector(inputvel.x, inputvel.y, inputvel.z),
+  anglevector(inputang.x, inputang.y, inputang.z),
+  angularvel(inputavel.x, inputavel.y, inputavel.z)
+{/*
+  this->posvector = *(new Vec4f(inputpos.x, inputpos.y, inputpos.z));
+  this->velvector = *(new Vec4f(inputvel.x, inputvel.y, inputvel.z));
+  this->anglevector = *(new Vec4f(inputang.x, inputang.y, inputang.z));
+  this->angularvel = *(new Vec4f(inputavel.x, inputavel.y, inputavel.z));*/
 }
 
 void Entity::updatevelocity(Vec4f accelerationvec)
 {
-  this->velvector = this->velvector+accelerationvec;
+  this->velvector = this->velvector + accelerationvec;
 }
 
 void Entity::updateangle(Vec4f inputangle)
@@ -23,9 +27,18 @@ void Entity::updateposition()
   this->posvector = this->posvector + this->velvector;
 }
 
-ShipClass::ShipClass(float posx, float posy, float posz, float velx, float vely, float velz, float avecx, float avecy, float avecz, float avelx, float avely, float avelz, int inputcount): Entity (posx, posy, posz, velx, vely, velz, avecx, avecy, avecz, avelx, avely, avelz)
+ShipClass::ShipClass(Vec4f inputpos, Vec4f inputvel, Vec4f inputang, Vec4f inputavel, int inputcount):
+Entity (inputpos, inputvel, inputang, inputavel)
 {
   initsystems(inputcount);
+}
+
+ShipClass::~ShipClass()
+{
+  delete&(this->posvector);
+  delete&(this->velvector);
+  delete&(this->anglevector);
+  delete&(this->angularvel);
 }
 
 void ShipClass::initsystems(int systemcount/*, int *subsystemcount*/)
@@ -45,6 +58,18 @@ void ShipClass::initsubsystems(int systemcount, int *subtypes, int *subcounts, f
     }
 }
 
+void ShipClass::printvectors()
+{
+  std::cout << "Position: ";
+  this->posvector.printvector();
+  std::cout << "\nVelocity: ";
+  this->velvector.printvector();
+  std::cout << "\nRotation: ";
+  this->anglevector.printvector();
+  std::cout << "\nAngularV: ";
+  this->angularvel.printvector();
+}
+
 void ShipClass::removeship(int systemcount){
   for (int i = 0; i < systemcount; i++)
     {
@@ -53,12 +78,33 @@ void ShipClass::removeship(int systemcount){
   free(this->systemlist);
 }
 
+SystemStorage::SystemStorage(int inputnumber)
+{
+  this->systemnumber = inputnumber;
+}
+
 SubsystemStorage::SubsystemStorage(int inputnumber, int inputcount, float *inputvals)
 {
+  this->subsystemstorageidentifier = inputnumber;
+  this->currentheat = 0;
+  this->maxheat = inputvals[0];
+  this->currenthealth = inputvals[1];
+  this->maxhealth = inputvals[1];
+  this->numcomponents = inputcount;
+  this->componentvals = inputvals;
+}
 
+SubsystemStorage::~SubsystemStorage()
+{
+  free(this->componentvals);
 }
 
 int main()
 {
-  
+  Vec4f testposvec = Vec4f(8, 0, 0);
+  Vec4f testvelvec = Vec4f(0, 0, 20.3);
+  Vec4f testangvec = Vec4f(0, 10, 0);
+  Vec4f testangvel = Vec4f(18.8, 0, 0);
+  ShipClass *tempclass = new ShipClass(testposvec, testvelvec, testangvec, testangvel, 0);
+  tempclass->printvectors();
 }

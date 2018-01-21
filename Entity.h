@@ -9,7 +9,7 @@ class Entity{
   Vec4f angularvel;
   float *classvarlist;
   
-  Entity(float posx, float posy, float posz, float velx, float vely, float velz, float ang1, float ang2, float ang3, float avelx, float avely, float avelz);
+  Entity(Vec4f inputpos, Vec4f inputvel, Vec4f inputang, Vec4f inputavel);
   
   void updateangle(Vec4f inputangle);
   void updatevelocity(Vec4f accelerationvector);
@@ -28,16 +28,17 @@ class SubsystemStorage{
   int numcomponents;
   float *componentvals;
   SubsystemStorage(int inputnumber, int inputcount, float *inputvals);
+  ~SubsystemStorage();
 
 };
 
 class SystemStorage{
  public:
   //enum systemdesignationnumber systemnum;
-  int systemdnumber;
+  int systemnumber;
   int numsystems;
   SubsystemStorage *tempstorage;
-  SystemStorage(int inputnumber, int inputcount);
+  SystemStorage(int inputnumber/*, int subinputcount*/);
 
   void addspecifiedsystemval(int inputnum, float addamount);
   void modifyspecifiedsystemval(int inputnum, float modamount);
@@ -46,10 +47,11 @@ class SystemStorage{
 class ShipClass: public Entity{
  public:
   SystemStorage *systemlist;
-  ShipClass(float posx, float posy, float posz, float velx, float vely, float velz, float avecx, float avecy, float avecz, float avec1, float avec2, float avec3, int numsubsyms);
-
+  ShipClass(Vec4f inputpos, Vec4f inputvel, Vec4f inputang, Vec4f inputavel, int numsubsyms);
+  ~ShipClass();
   void initsystems(int numsubsyms);
   void initsubsystems(int systemcount, int *subsystemtypes, int *subsystemcounts, float** subsystemvals);
+  void printvectors();
   void removeship(int systemcount);
 };
 
