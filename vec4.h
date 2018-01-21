@@ -1,7 +1,7 @@
 #ifndef VEC_FOUR_H
 #define VEC_FOUR_H
 
-
+#include <iostream>
 
 //4d vector with integer values
 class Vec4{
@@ -30,6 +30,8 @@ class Vec4{
   void scale(int f);
   //magnitude, ignoring w
   int magnitude() const;
+
+  void printvector() const;
 };
 
 
@@ -62,6 +64,8 @@ class Vec4f{
   void scale(double f);
   //magnitude, ignoring w
   double magnitude() const;
+
+  void printvector() const;
 };
 
 #endif

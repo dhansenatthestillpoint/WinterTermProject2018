@@ -67,7 +67,13 @@ int  Vec4::magnitude() const{
   return (int)sqrt(pow(this->x,2) + pow(this->y,2)+pow(this->z, 2));
 }
 
-
+void Vec4::printvector()const{
+  std::cout << this->x;
+  std::cout << ",";
+  std::cout << this->y;
+  std::cout << ",";
+  std::cout << this->z;
+}
 
 
 
@@ -143,4 +149,12 @@ void Vec4f::scale(double f){
 
 double Vec4f::magnitude()const{
   return sqrt(pow(this->x,2) + pow(this->y,2)+pow(this->z, 2));
+}
+
+void Vec4f::printvector()const{
+  std::cout << this->x;
+  std::cout << ",";
+  std::cout << this->y;
+  std::cout << ",";
+  std::cout << this->z;
 }
