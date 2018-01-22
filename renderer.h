@@ -10,6 +10,7 @@
 #include "Entity.h"
 #include "camera.h"
 #include <vector>
+#include "light_and_gravity.h"
 
 //allows runtime generation of comparators, so that sorting by distance to camera is possible.
 class z_cmp{
@@ -29,7 +30,7 @@ class Renderer{
   int mchannels;
   int mwidth;
   int mheight;
-  
+  CelestialBody * light;
   Camera * camera;
   Camera oldcamera;
   //big ol array things are stored into
@@ -39,6 +40,8 @@ class Renderer{
   //some kind of model updates this every tick
   std::vector<Entity> * allEntities;
   unordered_map<std:: string, ObjectMap> ObjectMap allObjectMaps;
+
+  int transform_matrix[4][4];
  public:
   //update size
   void set_pixbuf ( Glib::RefPtr< Gdk::Pixbuf > pixbuf, int rowstride, int nchannels, int width, int height);

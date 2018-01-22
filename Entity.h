@@ -9,6 +9,7 @@ class Entity{
   Vec4f posvector;
   Vec4f velvector;
   Vec4f anglevector; //Coreesponds to curent heading, NOT cross 0 with current heading. will point in directionof nose of ship
+  Vec4f rollvector; //point towards up, in the ships frame of reference. 
   Vec4f angularvel;
   float *classvarlist;
   

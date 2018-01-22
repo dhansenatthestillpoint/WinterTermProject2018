@@ -34,22 +34,29 @@ void Renderer::render(double time =0.0){
   all_f  =new std::vector<Face>();
   int offset=0;
   int vt_offset=0;
+  //precalculate anything that doesn't include rel_pos, or current
+  Vec4f aim = camera->get_aim();
+  Vec4f vert = camera->get_vertical() * camera->height;
+  Vec4f horz= camera-> get_horizontal() * camera->width;
+  Vec4f cull_top = (aim+vert).cross(camera->get_horizontal()).normalize();
+  Vec4f cull_bottom = (aim-vert).cross(camera->get_horizontal()).normalize();
+  Vec4f cull_right = (aim+horz).cross(camera->get_vertical()  ).normalize();
+  Vec4f cull_left = (aim-horz).cross(camera->get_vertical()  ).normalize();
+
   for (int ent_i = 0; ent_i <allEntities.size(); ent_i++){
     current = &allObjectMaps[ allEntities[ent_i].ship_model];
     curEnt =&allEntities[ent_i];
     //cull by viewing frustrum
-    Vec4f aim = camera->get_aim();
-    Vec4f rel_pos = curEnt->pos - camera->pos;
+
+    Vec4f rel_pos = curEnt->posvector - camera->posvector;
     double cam_z = camera->aim.dot(rel_pos);
     double radius = current->radius;
-    Vec4f vert = camera->get_vertical() * camera->height;
-    Vec4f horz= camera-> get_horizontal() * camera->width;
     if (cam_z > camera->near_plane - radius //front
 	&& cam_z < camera->far_plane + radius //back
-	&& rel_pos.dot ( (aim+vert).cross(camera->get_horizontal()).normalize()) < 0+radius //top
-	&& rel_pos.dot ( (aim-vert).cross(camera->get_horizontal()).normalize()) > 0-radius //bottom
-	&& rel_pos.dot ( (aim+horz).cross(camera->get_vertical()  ).normalize()) < 0+radius //right
-	&& rel_pos.dot ( (aim-horz).cross(camera->get_vertical()  ).normalize()) > 0-radius //left    
+	&& rel_pos.dot (cull_top)    < 0+radius //top
+	&& rel_pos.dot (cull_bottom) > 0-radius //bottom
+	&& rel_pos.dot (cull_right)  < 0+radius //right
+	&& rel_pos.dot (cull_left)   > 0-radius //left    
 	))
       {
 
@@ -61,15 +68,17 @@ void Renderer::render(double time =0.0){
 	Vec4f ship_y = ship_z.cross(ship_x);
 	ship_y.normalize();
 	int local_to_global[4][4] = {
-	  {ship_x.x, ship_y.x, ship_z.x, curEnt.posvector.x},
-	  {ship_x.y, ship_y.y, ship_z.y, curEnt.posvector.y},
-	  {ship_x.z, ship_y.z, ship_z.z, curEnt.posvector.z},
+	  {ship_x.x, ship_y.x, ship_z.x, curEnt->posvector.x},
+	  {ship_x.y, ship_y.y, ship_z.y, curEnt->posvector.y},
+	  {ship_x.z, ship_y.z, ship_z.z, curEnt->posvector.z},
 	  {0,0,0,1}
 	}
 	//add faces to face list,
 	//vectors to veclist
 	//texture vecs to texturelist 
-	for (int i=0; i<current->get_num_v(); i++){
+
+	
+for (int i=0; i<current->get_num_v(); i++){
 	  all_v_vn.push_back(local_to_global * current->vertices[i]); //add transformed vector to all_v_vn
 	  
 	}
@@ -81,7 +90,7 @@ void Renderer::render(double time =0.0){
 	}  
 	for(int i=0; i<i<current->get_num_f(); i++){
 	  Face * curface= &(current->faces[i]);
-	  all_f.push_back(Face(curface->v[0]+offset, curface->v[1]+offset, curface->v[2]+offset, curface->v[3]+offset, curface->vt[0]+vt_offset, curface->vt[1]+vt_offset, curface->vt[2]+vt_offset, curface->vn+offset+current->get_num_v())); //hooey mama thats a line of code. adds offset to each value in the face. I'll kick myself if I have to do something similar again and shoulda just sucked it up and writen a face::transform method. 
+	  all_f.push_back(Face(curface->v[0]+offset, curface->v[1]+offset, curface->v[2]+offset,  curface->vt[0]+vt_offset, curface->vt[1]+vt_offset, curface->vt[2]+vt_offset, curface->vn+offset+current->get_num_v())); //hooey mama thats a line of code. adds offset to each value in the face. I'll kick myself if I have to do something similar again and shoulda just sucked it up and writen a face::transform method. 
 	}
       
 
@@ -92,25 +101,58 @@ void Renderer::render(double time =0.0){
     //sort facelist
     std::sort(all_f.begin, all_f.end, z_cmp(camera->posvector));
     //generate transform matrix. 
-
-    for (int i=0; i<all_v_vn.size(); i++){
-  //transform vectors by global coords to data on screen.  
-  //
-  //
-  
+    if (!(oldcamera=(*camera))){//only do this math if the camera has moved
+      double Vx = (camera -> get_vertical()).x;
+      double Ux = (camera -> get_horizontal()).x;
+      double Vy = (camera -> get_vertical()).y;
+      double Uy = (camera -> get_horizontal()).y;
+      x_factor = mwidth * Ux*Uy /(camera->width  * (Vx*Uy - Vy*Ux));
+      y_factor = mheight* Vx*Vy /(camera->height * (Ux*Vy - Uy*Vx));
+      //screen x
+      transform_matrix[0][0] = x_factor * ( 1 - aim.x * aim.x + aim.x * aim.y);
+      transform_matrix[0][1] = x_factor * (-1 + aim.y * aim.y - aim.x * aim.y) ;
+      transform_matrix[0][2] = x_factor * (     aim.y * aim.z - aim.x * aim.z) ;
+      transform_matrix[0][3] = camera->width; //puts coordinates positive
+      //screen y
+      transform_matrix[1][0] = y_factor * ( 1 - aim.x * aim.x + aim.x * aim.y);
+      transform_matrix[1][1] = y_factor * (-1 + aim.y * aim.y - aim.x * aim.y);
+      transform_matrix[1][2] = y_factor * (     aim.y * aim.z - aim.x * aim.z);
+      transform_matrix[1][3] = camera->height;
+      //the screen is flat my dudes. Like maybe some other useful info could go here but  ¯\_(ツ)_/¯
+      transform_matrix[2][0] = 0;
+      transform_matrix[2][1] = 0;
+      transform_matrix[2][2] = 0;
+      transform_matrix[2][3] = 0;
+      //and mystic w
+      transform_matrix[2][0] = 0;
+      transform_matrix[3][1] = 0;
+      transform_matrix[3][2] = 0;
+      transform_matrix[3][3] = 1;
 
     }
+    for (int i=0; i<all_v_vn.size(); i++){
+  //transform vectors by global coords to data on screen.
+      Vec4f p_prime = all_v_vn[i]-camera->posvector;
+      all_v_vn[i] = transform_matrix * p_prime; 
+      all_v_vn[i].scale(1/(p_prime.dot(aim)));
+    }
 
-
+			
+ 
+    //rasterize faces. pass by value
+    for (int i=0; i<all_f.size(); i++){
+      
+    }
 
 
 }
 
 
   //constructor. Should be called exactly once:
-Renderer::Renderer(std::vector<Entity> * entities):
+Renderer::Renderer(std::vector<Entity> * entities, Camera * incamera, CelestialBody * solar_system):
   allEntities(entities),
-  camera(incamera)
+  camera(incamera),
+  light(solar_system)
 {
   //load in obj files
   // count all obj files:
