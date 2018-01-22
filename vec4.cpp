@@ -86,7 +86,13 @@ int  Vec4::magnitude() const{
   return (int)sqrt(pow(this->x,2) + pow(this->y,2)+pow(this->z, 2));
 }
 
-
+void Vec4::printvector()const{
+  std::cout << this->x;
+  std::cout << ",";
+  std::cout << this->y;
+  std::cout << ",";
+  std::cout << this->z;
+}
 
 
 
@@ -183,6 +189,15 @@ double Vec4f::magnitude()const{
   return sqrt(pow(this->x,2) + pow(this->y,2)+pow(this->z, 2));
 }
 
+
+void Vec4f::printvector()const{
+  std::cout << this->x;
+  std::cout << ",";
+  std::cout << this->y;
+  std::cout << ",";
+  std::cout << this->z;
+}
+
 /*
 template <typename T, int N> void vectors::matrix_multiply( T matr1[N][N], T matr2[N][N], T result[N][N]){
   for (int i = 0; i<N; i++){
@@ -195,3 +210,4 @@ template <typename T, int N> void vectors::matrix_multiply( T matr1[N][N], T mat
   }
 }
 */
+
