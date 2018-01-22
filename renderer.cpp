@@ -29,19 +29,19 @@ void Renderer::render(double time =0.0){
   //loop over all Entities.
   ObjectMap * current;
   Entity * curEnt; //o god of isaac and abraham, why do I do these things
-  all_v_vn  =new std::vector<Vec4f>();
-  all_vt  =new std::vector<Vec4f>();
-  all_f  =new std::vector<Face>();
+  all_v  =new std::vector<Vec4f>();
+  all_vn  =new std::vector<Vec4f>();
+  all_f  =new std::vector<Face *>();
   int offset=0;
-  int vt_offset=0;
+  int vn_offset =0;
   //precalculate anything that doesn't include rel_pos, or current
   Vec4f aim = camera->get_aim();
   Vec4f vert = camera->get_vertical() * camera->height;
   Vec4f horz= camera-> get_horizontal() * camera->width;
-  Vec4f cull_top = (aim+vert).cross(camera->get_horizontal()).normalize();
+  Vec4f cull_top = (aim+vert).cross(camera->get_horizontal()   ).normalize();
   Vec4f cull_bottom = (aim-vert).cross(camera->get_horizontal()).normalize();
-  Vec4f cull_right = (aim+horz).cross(camera->get_vertical()  ).normalize();
-  Vec4f cull_left = (aim-horz).cross(camera->get_vertical()  ).normalize();
+  Vec4f cull_right = (aim+horz).cross(camera->get_vertical()   ).normalize();
+  Vec4f cull_left = (aim-horz).cross(camera->get_vertical()    ).normalize();
 
   for (int ent_i = 0; ent_i <allEntities.size(); ent_i++){
     current = &allObjectMaps[ allEntities[ent_i].ship_model];
@@ -60,10 +60,10 @@ void Renderer::render(double time =0.0){
 	))
       {
 
-	//these are local basis vectors, not remotely coordinates
+	//these are local basis vectors, not coordinates
 	Vec4f ship_x = curEnt->anglevector.copy();
 	ship_x.normalize();
-	Vec4f ship_z = curEnt->rollvector.copy();
+	Vec4f ship_z = curEnt->rollvector.copy(); 
 	ship_z.normalize();
 	Vec4f ship_y = ship_z.cross(ship_x);
 	ship_y.normalize();
@@ -73,24 +73,38 @@ void Renderer::render(double time =0.0){
 	  {ship_x.z, ship_y.z, ship_z.z, curEnt->posvector.z},
 	  {0,0,0,1}
 	}
+	int rotation_only[4][4] = {
+	  {ship_x.x, ship_y.x, ship_z.x, 0},
+	  {ship_x.y, ship_y.y, ship_z.y, 0},
+	  {ship_x.z, ship_y.z, ship_z.z, 0},
+	  {0,0,0,1}
+	}
 	//add faces to face list,
 	//vectors to veclist
 	//texture vecs to texturelist 
 
-	
-for (int i=0; i<current->get_num_v(); i++){
-	  all_v_vn.push_back(local_to_global * current->vertices[i]); //add transformed vector to all_v_vn
+	//move v, transform to global
+	for (int i=0; i<current->get_num_v(); i++){
+	  all_v.push_back(local_to_global * current->vertices[i]); //add transformed vector to all_v_vn
 	  
 	}
-	for (int i=0; i<i<current->get_num_vn(); i++){
-	  all_v_vn.push_back(local_to_global * current->normals[i]);
+	
+	for (int i=0; i<current->get_num_vn(); i++){
+	  all_vn.push_back(local_to_global * current->normals[i]);
 	}
+		/*
 	for(int i=0; i<i<current->get_num_vt(); i++){
 	  all_vt.push_back(current->textures[i]); //leave textures unchanged
-	}  
-	for(int i=0; i<i<current->get_num_f(); i++){
-	  Face * curface= &(current->faces[i]);
-	  all_f.push_back(Face(curface->v[0]+offset, curface->v[1]+offset, curface->v[2]+offset,  curface->vt[0]+vt_offset, curface->vt[1]+vt_offset, curface->vt[2]+vt_offset, curface->vn+offset+current->get_num_v())); //hooey mama thats a line of code. adds offset to each value in the face. I'll kick myself if I have to do something similar again and shoulda just sucked it up and writen a face::transform method. 
+	  } */ 
+	//Vec4f * start_of_old_v  = current->get_v();
+	//Vec4f * start_of_old_vn = current->get_vn();
+	//copy all faces, update
+	for(int i=0; i< current->get_num_f(); i++){
+	  Face  * curface= new  Face((current->faces[i]));//copy?
+	  curface->light = light.get_Light(curface->v[0], curface->vn);
+	  curface->update_v(&(all_v[offset]));
+	  curface->update_vn(&(all_vn[vn_offset]));
+	  all_f.push_back(curface);
 	}
       
 
@@ -141,7 +155,7 @@ for (int i=0; i<current->get_num_v(); i++){
  
     //rasterize faces. pass by value
     for (int i=0; i<all_f.size(); i++){
-      
+      Rasterizer.rasterize(&(f[i]));
     }
 
 

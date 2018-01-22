@@ -7,7 +7,7 @@
 
   //constructor, takes in  3 vertices and a normal vector
   // mallocs the instance variable vertices, and assigns values
-Face::Face(int v1, int v2, int v3,int vt1, int vt2, int vt3,  int norm):
+Face::Face (Vec4f*  v1, Vec4f* v2, Vec4f* v3, Vec4f* vt1, Vec4f* vt2, Vec4f* vt3, Vec4f* norm);
   vn(norm)
 {
   v[0]=v1;
@@ -19,7 +19,16 @@ Face::Face(int v1, int v2, int v3,int vt1, int vt2, int vt3,  int norm):
 }
 
 
+void Face::update_v(Vec4f * start_of_new_v){
+  for (int i=0; i<3 /*aww*/; i++)
+    {
+      v[i] = (Vec4f *)(v[i] + start_of_new - v);
+    }
+}
 
+void Face::update_vn(Vec4f * start_of_new_vn){
+  vn = (Vec4f *)(vn + start_of_new - v);
+}
 
 
 
@@ -135,7 +144,7 @@ ObjectMap::ObjectMap (std::string filename){ //TODO
 	
 	   c_line = NULL;
 	  }
-	faces[face_i]= Face(vert1, vert2, vert3, vt1, vt2, vt3, norm );//handling index out of bounds errors would be a good idea. 
+	faces[face_i]= Face(&(vertices[vert1]), &(vertices[vert2]),&( vertices[vert3]),&( textures[vt1]),&( textures[vt2]),&( textures[vt3]), &(normals[norm]) );//handling index out of bounds errors would be a good idea. 
 	face_i++;
 	vert2  = vert3;
 	vt2 = vt3;

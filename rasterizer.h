@@ -21,7 +21,7 @@ class Rasterizer{
   //to be called when window is resized
   void updateSize(int rowstride, int nchannels, int width, int height);
   //we are gonna do some reading bitmap files in directly 
-  void rasterize (Vec4f p1, Vec4f p2, Vec4f p3,#something_for_lighting#, std::string texturefile);
+  void rasterize (Face * face, std::string texturefile);
 }
 
 

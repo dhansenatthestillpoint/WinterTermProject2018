@@ -4,18 +4,20 @@
 
 #include "vec4.h"
 #include <string>
+#include "light_and_gravity.h"
 
 class Face{
  public:
-
-  int v[3]; //vertices is 3space
-  int vt[3]; //vertices on texture
-  int vn;//normal
-
-  
+  Color light;
+  Vec4f * v[3]; //vertices is 3space
+  Vec4f * vt[3]; //vertices on texture
+  Vec4f * vn;//normal
+  //updaters for moving to new array
+  void update_v(Vec4f * start_of_new_v);
+  void update_vn(Vec4f * start_of_new_vn);  
   //constructor, takes in  3 vertices and a normal vector
   // mallocs the instance variable vertices, and assigns values
-  Face(int  v1, int v2, int v3, int vt1, int vt2, int vt3, int norm);
+  Face(Vec4f*  v1, Vec4f* v2, Vec4f* v3, Vec4f* vt1, Vec4f* vt2, Vec4f* vt3, Vec4f* norm);
   //destructor, frees vertices.
   //  ~Triangle();
 
@@ -48,8 +50,7 @@ class ObjectMap{
   //explicit copy constructor
 
   ObjectMap (ObjectMap o2);
- 
-  
+
 
   //accessor methods
   Face * get_faces() const;

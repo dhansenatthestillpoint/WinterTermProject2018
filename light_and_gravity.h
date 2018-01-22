@@ -8,22 +8,8 @@
 #include <algorithm>
 #include <math.h>
 #include "Entity.h"
-//implements colors in a way that they add nicely, and colors can be blown out if overlit
-class Color{
- private:
-  int r;
-  int b;
-  int g;
- public:
-  friend Color operator+(Color c1, Color c2);
-  unsigned char r() const;
-  unsigned char b() const;
-  unsigned char g() const;
-  //input normal rbg vals
-  Color (unsigned char r, unsigned char b, unsigned char g);
-  //same as above if useSquareRoots = true, else input is rbg vals squared.
-  Color (int r, int b, int g, bool useSquareRoots=true);
-};
+#include "color.h"
+
 
 //Abstract class for celestial bodies
 class CelestialBody: public Entity{
