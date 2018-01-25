@@ -1,0 +1,9 @@
+Read in textures in rasterizer
+
+Implement light_and_gravity
+
+Implement camera
+
+Rasterizer utility functions (constructor, resize)
+
+Main method

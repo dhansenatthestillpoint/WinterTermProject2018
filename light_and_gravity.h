@@ -20,28 +20,32 @@ class CelestialBody: public Entity{
   virtual Color get_Light(Vec4f pos, Vec4f angle) const =0;
   virtual Vec4f get_Gravity(Vec4f pos) const = 0;
 
-}
+};
 //Makes a sun with gravity and light emanating from it. 
 class Sun: public CelestialBody{
+ private:
+
+  int mmass;
  public:
   Sun(Vec4f pos, Color color, int mass);
   
   Color get_Light(Vec4f pos, Vec4f angle) const override;
-  Color get_Gravity(Vec4f pos, Vec4f angle) const override;
+  Vec4f get_Gravity(Vec4f pos) const override;
 
-}
+};
 //Planet class has a body it orbits, and and a light source it reflects/casts shadows. 
 //Also works for moons and death stars
 class Planet: public CelestialBody{
  private:
   CelestialBody * mLightSource;
   CelestialBody * mGravitySource;
+
  public:
   Color get_Light(Vec4f pos, Vec4f angle) const override;
-  Color get_Gravity(Vec4f pos, Vec4f angle) const override;
+  Vec4f get_Gravity(Vec4f pos) const override;
 
-  Planet (CelestialBody * LightSource, CelestialBody * GravitySource,Color color, int mass);
-}
+  Planet (CelestialBody * LightSource, CelestialBody * GravitySource,Color color, int mass, Vec4f pos);
+};
 //aggregate class for groups of celestial bodies.
 class System: public CelestialBody{
  private:
@@ -49,7 +53,16 @@ class System: public CelestialBody{
  public:
   //sums over its component bodies.
   Color get_Light(Vec4f pos, Vec4f angle) const override;
-  Color get_Gravity(Vec4f pos, Vec4f angle) const override;
+  Vec4f get_Gravity(Vec4f pos) const override;
   void add(CelestialBody * body);
   System();
-}
+};
+
+class ConstantLight: public CelestialBody{
+ public:
+  ConstantLight(Color color);
+  Color get_Light(Vec4f pos, Vec4f angle) const override;
+  Vec4f get_Gravity(Vec4f pos) const override;
+};
+
+#endif

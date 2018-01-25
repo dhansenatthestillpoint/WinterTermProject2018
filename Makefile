@@ -21,10 +21,18 @@ vectortest: vec4.o vectortest.cpp
 
 light.o: light.cpp
 	g++ -std=c++14 -c light.cpp
-objectloadertest: objectloadertest.cpp objectloader.o vec4.o
+objectloadertest: objectloadertest.cpp objectloader.o vec4.o light_and_gravity.o color.o
 	g++  -std=c++14  -o objectloadertest objectloadertest.cpp objectloader.o vec4.o
 objectloader.o: objectloader.cpp
 	 g++ -std=c++14 -c objectloader.cpp
+rasterizer.o: rasterizer.cpp
+	g++ -std=c++14 `pkg-config --cflags --libs gtkmm-3.0` -c rasterizer.cpp
+renderer.o: renderer.cpp
+	g++ -std=c++14 `pkg-config --cflags --libs gtkmm-3.0` -c renderer.cpp
+light_and_gravity.o: light_and_gravity.cpp
+	g++ -std=c++14 -c light_and_gravity.cpp
+color.o: color.cpp
+	g++ -std=c++14 -c color.cpp
 
 clean:
 	rm *.o  main lightingtest objectloadertest vectortest

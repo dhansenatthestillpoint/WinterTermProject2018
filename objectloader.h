@@ -1,7 +1,7 @@
 #ifndef OBJECT_LOADER_H
 #define OBJECT_LOADER_H
 
-
+#include "color.h"
 #include "vec4.h"
 #include <string>
 #include "light_and_gravity.h"
@@ -12,6 +12,7 @@ class Face{
   Vec4f * v[3]; //vertices is 3space
   Vec4f * vt[3]; //vertices on texture
   Vec4f * vn;//normal
+  unsigned char * texture_image;
   //updaters for moving to new array
   void update_v(Vec4f * start_of_new_v);
   void update_vn(Vec4f * start_of_new_vn);  
@@ -31,7 +32,10 @@ class ObjectMap{
   int vncount;
   int vtcount;
   int fcount;
+  int imgwidth;
+  int imgheight;
  public:
+  unsigned char * texture_image;
   double radius;
   Vec4f * vertices;
   Vec4f * normals;
@@ -49,7 +53,7 @@ class ObjectMap{
   ObjectMap (std::string filename);
   //explicit copy constructor
 
-  ObjectMap (ObjectMap o2);
+  ObjectMap (const ObjectMap &o2);
 
 
   //accessor methods

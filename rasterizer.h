@@ -1,10 +1,19 @@
 #ifndef RASTER_EYES_H
 #define RASTER_EYES_H
 
+
+
 #include "vec4.h"
-#include <gdk/gdkpixbuf.h>
 #include "objectloader.h"
 #include <string>
+#include <gdkmm/general.h>
+#include <cairomm/context.h>
+#include <gdk/gdkpixbuf.h>
+#include <stdlib.h>
+#include <glib.h>
+#include <glibmm/main.h>
+#include <gdk/gdk.h>
+
 
 class Rasterizer{
  private:
@@ -20,9 +29,9 @@ class Rasterizer{
   Rasterizer(Glib::RefPtr< Gdk::Pixbuf > pixbuf, int rowstride, int nchannels, int width, int height ); 
   //to be called when window is resized
   void updateSize(int rowstride, int nchannels, int width, int height);
-  //we are gonna do some reading bitmap files in directly 
-  void rasterize (Face * face, std::string texturefile);
-}
+  //Textures are hard
+  void  rasterize (const Face * face, const char * texturefile, const int texwidth, const int texheight);
+};
 
 
 
