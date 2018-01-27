@@ -156,7 +156,7 @@ ObjectMap::ObjectMap (std::string filename){ //TODO
     }
     file.close();
   }
-  //read in textures
+  //go find the texture file
   texturefile = "";
   file.open(filename.substr(0,filename.length() - 4)+".mtl");
   if (file.is_open()){
@@ -166,7 +166,7 @@ ObjectMap::ObjectMap (std::string filename){ //TODO
       }
     }
   }
-  //actual reading
+  //read in textures
   FILE* f = fopen(texturefile.c_str(), "rb");
   unsigned char info[54];
   fread(info, sizeof(unsigned char), 54, f); // read the 54-byte header
