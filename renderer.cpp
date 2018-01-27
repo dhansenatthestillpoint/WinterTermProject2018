@@ -92,19 +92,16 @@ void Renderer::render(double time){
 	for (int i=0; i<current->get_num_vn(); i++){
 	  all_vn->push_back(local_to_global * current->normals[i]);
 	}
-		/*
-	for(int i=0; i<i<current->get_num_vt(); i++){
-	  all_vt.push_back(current->textures[i]); //leave textures unchanged
-	  } */ 
-	//Vec4f * start_of_old_v  = current->get_v();
-	//Vec4f * start_of_old_vn = current->get_vn();
+	
 	//copy all faces, update
 	for(int i=0; i< current->get_num_f(); i++){
-	  Face  * curface= new  Face((current->faces[i]));//copy?
-	  curface->light = light.get_Light(curface->v[0], curface->vn);
-	  curface->update_v(&(all_v[offset]));
-	  curface->update_vn(&(all_vn[vn_offset]));
-	  all_f.push_back(curface);
+	  if (camera.dot(current->faces[i]->vn)<0){ //backface culling 
+	    Face  * curface= new  Face((current->faces[i]));//copy?
+	    curface->light = light.get_Light(curface->v[0], curface->vn);
+	    curface->update_v(&(all_v[offset]));
+	    curface->update_vn(&(all_vn[vn_offset]));
+	    all_f.push_back(curface);
+	  }
 	}
       
 
@@ -142,7 +139,7 @@ void Renderer::render(double time){
       transform_matrix[3][1] = 0;
       transform_matrix[3][2] = 0;
       transform_matrix[3][3] = 1;
-
+      oldcamera = (*camera);
     }
     for (int i=0; i<all_v_vn.size(); i++){
   //transform vectors by global coords to data on screen.

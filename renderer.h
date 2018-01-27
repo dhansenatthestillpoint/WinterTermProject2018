@@ -48,7 +48,7 @@ class Renderer{
   std::vector<Face *> * all_f;
   //some kind of model updates this every tick
   std::vector<Entity *> * allEntities;
-  std::unordered_map<std:: string, ObjectMap *> allObjectMaps;
+  std::unordered_map<std::string, ObjectMap *> * allObjectMaps;
 
   int transform_matrix[4][4];
  public:

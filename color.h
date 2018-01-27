@@ -19,10 +19,15 @@ class Color{
   unsigned char get_r() const;
   unsigned char get_b() const;
   unsigned char get_g() const;
-  //input normal rbg vals                                                                                                                      
+  friend Color operator*(const int scale, const Color c2);
+  friend Color operator*(const Color c2 ,const int scale);
+  friend Color operator/(const Color c2 ,const int scale);
+
+ //input normal rbg vals                                                                                                                      
   Color (unsigned char R, unsigned char G, unsigned char B);
   //same as above if useSquareRoots = true, else input is rbg vals squared.                                                                    
   Color (int R, int G, int B, bool useSquareRoots=true);
+  
 };
 
 

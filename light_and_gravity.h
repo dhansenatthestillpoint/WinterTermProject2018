@@ -18,6 +18,8 @@ class CelestialBody: public Entity{
  public:
   
   virtual Color get_Light(Vec4f pos, Vec4f angle) const =0;
+  //get_Gravity returns a vector representing acceleration due to gravity. This way the mass of the thing being gravitated cancels with itself
+  //F =ma, F = G m1 m2 / r^2, thus a = G m2/r^2. And since only some things make gravity, we don't have to worry about the effect of nearby ships on planetary mechanics. 
   virtual Vec4f get_Gravity(Vec4f pos) const = 0;
 
 };
@@ -47,7 +49,7 @@ class Planet: public CelestialBody{
   Planet (CelestialBody * LightSource, CelestialBody * GravitySource,Color color, int mass, Vec4f pos);
 };
 //aggregate class for groups of celestial bodies.
-class System: public CelestialBody{
+class SolarSystem: public CelestialBody{
  private:
   std::vector<CelestialBody *> bodies;
  public:
@@ -55,7 +57,7 @@ class System: public CelestialBody{
   Color get_Light(Vec4f pos, Vec4f angle) const override;
   Vec4f get_Gravity(Vec4f pos) const override;
   void add(CelestialBody * body);
-  System();
+  SolarSystem();
 };
 
 class ConstantLight: public CelestialBody{
