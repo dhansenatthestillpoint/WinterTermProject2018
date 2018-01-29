@@ -1,15 +1,25 @@
 #ifndef RENDERMENSCH_H
 #define RENDERMENSCH_H
 
-
+//holy includes batman
 #include "vec4.h"
-#include <gdk/gdkpixbuf.h>
 #include "objectloader.h"
 #include "rasterizer.h"
 #include <algorithm>
 #include "Entity.h"
 #include "camera.h"
 #include <vector>
+#include "light_and_gravity.h"
+#include <gdkmm/general.h>
+#include <cairomm/context.h>
+#include <gdk/gdkpixbuf.h>
+#include <glib.h>
+#include <glibmm/main.h>
+#include <gdk/gdk.h>
+#include <unordered_map>
+#define ARRSIZE 8
+
+
 
 //allows runtime generation of comparators, so that sorting by distance to camera is possible.
 class z_cmp{
@@ -18,7 +28,7 @@ class z_cmp{
  public:
   z_cmp(Vec4f camera_pos);
   bool operator()(Face f1, Face f2);
-}
+};
 
 
 
@@ -29,16 +39,18 @@ class Renderer{
   int mchannels;
   int mwidth;
   int mheight;
-  
+  CelestialBody * light;
   Camera * camera;
   Camera oldcamera;
   //big ol array things are stored into
-  std::vector<Vec4f> * all_v_vn;
-  std::vector<Vec4f> * all_vt;
-  std::vector<Face> * all_f;
+  std::vector<Vec4f> * all_v;
+  std::vector<Vec4f> * all_vn;
+  std::vector<Face *> * all_f;
   //some kind of model updates this every tick
-  std::vector<Entity> * allEntities;
-  unordered_map<std:: string, ObjectMap> ObjectMap allObjectMaps;
+  std::vector<Entity *> * allEntities;
+  std::unordered_map<std::string, ObjectMap *> * allObjectMaps;
+
+  int transform_matrix[4][4];
  public:
   //update size
   void set_pixbuf ( Glib::RefPtr< Gdk::Pixbuf > pixbuf, int rowstride, int nchannels, int width, int height);
@@ -48,12 +60,12 @@ class Renderer{
 
 
   //constructor. Should be called exactly once:
-  Renderer(std::vector<Entity> * entities, Camera * incamera );
+  Renderer(std::vector<Entity * > * entities, Camera * incamera );
 
   //destroy
-  ~Rendered();
+  ~Renderer();
 
-}
+};
 
 
 

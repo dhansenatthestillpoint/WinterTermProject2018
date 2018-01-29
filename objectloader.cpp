@@ -4,11 +4,13 @@
 #include <string.h>
 #include <stdio.h> //for sscanf
 #include <iostream>
+#include <algorithm>
 
   //constructor, takes in  3 vertices and a normal vector
   // mallocs the instance variable vertices, and assigns values
-Face::Face(int v1, int v2, int v3,int vt1, int vt2, int vt3,  int norm):
-  vn(norm)
+Face::Face (Vec4f*  v1, Vec4f* v2, Vec4f* v3, Vec4f* vt1, Vec4f* vt2, Vec4f* vt3, Vec4f* norm):
+  vn(norm),
+  light(Color(0,0,0))
 {
   v[0]=v1;
   v[1]=v2;
@@ -19,7 +21,16 @@ Face::Face(int v1, int v2, int v3,int vt1, int vt2, int vt3,  int norm):
 }
 
 
+void Face::update_v(Vec4f * start_of_new_v){
+  for (int i=0; i<3 /*aww*/; i++)
+    {
+      v[i] = (Vec4f *)((unsigned long)v[i] + (unsigned long)start_of_new_v - (unsigned long)v);
+    }
+}
 
+void Face::update_vn(Vec4f * start_of_new_vn){
+  vn = (Vec4f *)((unsigned long)vn + (unsigned long)start_of_new_vn - (unsigned long)v);
+}
 
 
 
@@ -102,7 +113,7 @@ ObjectMap::ObjectMap (std::string filename){ //TODO
       double z;
       sscanf(c_line, "v %lf %lf %lf\n", &x, &y, &z);
       Vec4f vecboi(x,y,z);
-      radius = max(radius, vecboi.magnitude());
+      radius = std::max(radius, vecboi.magnitude());
       vertices[vcount++]=vecboi;
     } else if (line[0]=='v' && line[1] == 'n'){
       double x;
@@ -135,7 +146,7 @@ ObjectMap::ObjectMap (std::string filename){ //TODO
 	
 	   c_line = NULL;
 	  }
-	faces[face_i]= Face(vert1, vert2, vert3, vt1, vt2, vt3, norm );//handling index out of bounds errors would be a good idea. 
+	faces[face_i]= Face(&(vertices[vert1]), &(vertices[vert2]),&( vertices[vert3]),&( textures[vt1]),&( textures[vt2]),&( textures[vt3]), &(normals[norm]) );//handling index out of bounds errors would be a good idea. 
 	face_i++;
 	vert2  = vert3;
 	vt2 = vt3;
@@ -145,9 +156,9 @@ ObjectMap::ObjectMap (std::string filename){ //TODO
     }
     file.close();
   }
-  //read in textures
+  //go find the texture file
   texturefile = "";
-  file.open(fname.substr(fname.length() - 4)+".mtl");
+  file.open(filename.substr(0,filename.length() - 4)+".mtl");
   if (file.is_open()){
     while (getline(file, line)){
       if (line.substr(0,5).compare("map_Kd")==0){
@@ -155,10 +166,24 @@ ObjectMap::ObjectMap (std::string filename){ //TODO
       }
     }
   }
+  //read in textures
+  FILE* f = fopen(texturefile.c_str(), "rb");
+  unsigned char info[54];
+  fread(info, sizeof(unsigned char), 54, f); // read the 54-byte header
+
+  // extract image height and width from header
+  imgwidth = *(int*)&info[18];
+  imgheight = *(int*)&info[22];
+
+  int size = 3 * imgwidth * imgheight;
+  texture_image = new unsigned char[size]; // allocate 3 bytes per pixel
+  fread(texture_image, sizeof(unsigned char), size, f); // read the rest of the data at once
+  fclose(f);
+
 }
 
 
-ObjectMap::ObjectMap(ObjectMap o2):
+ObjectMap::ObjectMap(const ObjectMap &o2):
 
 
   vcount (o2.vcount),
@@ -206,6 +231,7 @@ ObjectMap::~ObjectMap(){
   free (vertices);
   free(normals);
   free(textures);
+  delete texture_image;
 }
 
 

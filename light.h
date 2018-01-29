@@ -7,7 +7,20 @@
 #include <algorithm>
 #include <math.h>
 
-#define MAX_LIGHT 1
+
+class Color{
+ private:
+  int r;
+  int b;
+  int g;
+ public:
+  friend Color operator+(Color c1, Color c2);
+  unsigned char r() const;
+  unsigned char b() const;
+  unsigned char g() const;
+  Color (unsigned char r, unsigned char b, unsigned char g); 
+}
+
 
 
 //Light is a magic function which takes in the position and angle of an illuminated object, and returns a luminance and color.
@@ -15,12 +28,25 @@
 class Light{
 
  public:
-  unsigned char * color;
-  virtual std::tuple<double, unsigned char *> operator()(Vec4f pos, Vec4f angle) const = 0;
+  Color color;
+  Color operator()(Vec4f pos, Vec4f angle) const = 0;
   Light();
   virtual ~Light();
 
 };
+
+
+
+class Planet{
+ public:
+  
+
+
+}
+
+
+
+
 
 
 //adds two light sources
