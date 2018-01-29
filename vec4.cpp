@@ -1,4 +1,4 @@
-#include "vec4.h"
+#include "Vec4.h"
 #include <math.h>
 
 Vec4::Vec4(int x, int y, int z){
@@ -20,11 +20,10 @@ Vec4::Vec4(int x, int y, int z, int w){
 Vec4 operator+(Vec4 vec1,  Vec4 vec2){
   return Vec4(vec1.x+vec2.x, vec1.y+vec2.y, vec1.z+vec2.z, vec1.w+vec2.w);
 }
+
 //subtraction
 Vec4 operator-(Vec4 vec1, Vec4 vec2){
   return Vec4(vec1.x-vec2.x, vec1.y-vec2.y, vec1.z-vec2.z, (vec1.w-vec2.w==0 ? 1: vec1.w-vec2.w) );
-
-
 }
 
 //scalar multiplication, not in place                                                                                                        
@@ -112,10 +111,27 @@ Vec4f::Vec4f(float x, float y, float z, float w){
   this->w=w;
 }
 
-
+double Vec4f::wrapangle(double inputangle) const{
+  if (inputangle > 360.0)
+    {
+      return inputangle - 360.0;
+    }
+  else if (inputangle < 0.0)
+    {
+      return inputangle + 360.0;
+    }
+  else
+    {
+      return inputangle;
+    }
+}
 
 Vec4f operator+(Vec4f vec1,  Vec4f vec2){
   return Vec4f(vec1.x+vec2.x, vec1.y+vec2.y, vec1.z+vec2.z, vec1.w+vec2.w);
+}
+
+Vec4f Vec4f::addangles(Vec4f inputvec){
+  return Vec4f(this->wrapangle(this->x+ inputvec.x), this->wrapangle(this->y + inputvec.y), this->wrapangle(this->z + inputvec.z), this->w + inputvec.w);
 }
 
 Vec4f operator-(Vec4f vec1, Vec4f vec2){
