@@ -19,13 +19,64 @@ void Entity::updatevelocity(Vec4f accelerationvec)
 
 void Entity::updateangle(Vec4f inputangle)
 {
-  this->anglevector = this->anglevector + inputangle;
+  this->anglevector = anglevector.addangles(inputangle);
 }
 
 void Entity::updateposition()
 {
   this->posvector = this->posvector + this->velvector;
 }
+
+void Entity::setposition(Vec4f inputvec)
+{
+  this->posvector = inputvec;
+}
+
+void Entity::setvelocity(Vec4f inputvec)
+{
+  this->velvector = velvector;
+}
+
+void Entity::setangle(Vec4f inputvec)
+{
+  //  if (this->validangle(inputvec) == 1)
+  //{
+      //tan 45 == 1
+      this->anglevector.x = inputvec.x;
+      this->anglevector.y = inputvec.y;
+      this->anglevector.z = inputvec.z;
+      //}
+}
+
+double Entity::toradians(double inputangle)
+{
+  return inputangle * (M_PI / 180.0);
+}
+
+Vec4f Entity::getheading()
+{
+  return Vec4f(cos(toradians(this->anglevector.y)) * cos(toradians(this->anglevector.z)), -1 * cos(toradians(this->anglevector.y)) * cos(toradians(this->anglevector.z)), sin(toradians(this->anglevector.y)));
+}
+
+Vec4f Entity::getlocalz()
+{
+  return Vec4f((sin(toradians(this->anglevector.x)) * sin(toradians(this->anglevector.z)) - (cos(toradians(this->anglevector.x)) * cos(toradians(this->anglevector.z)) * sin(toradians(this->anglevector.y)))), (cos(toradians(this->anglevector.z)) * sin(toradians(this->anglevector.x)) + (cos(toradians(this->anglevector.x)) * sin(toradians(this->anglevector.y)) * sin(toradians(this->anglevector.z)))), (cos(toradians(this->anglevector.x)) * cos(toradians(this->anglevector.y))));
+}
+
+/*
+int Entity::validangle(Vec4f inputvec)
+{
+  double testvalue = pow(inputvec.x, 2) + pow(inputvec.y, 2) + pow(inputvec.z, 2);
+  if (testvalue >= 0.99999999 && testvalue <= 1.00000001)
+    {
+      return 1;
+    }
+  else
+    {
+      return 0;
+    }
+}
+*/
 
 ShipClass::ShipClass(Vec4f inputpos, Vec4f inputvel, Vec4f inputang, Vec4f inputavel, int inputcount):
 Entity (inputpos, inputvel, inputang, inputavel)
@@ -106,5 +157,6 @@ int main()
   Vec4f testangvec = Vec4f(0, 10, 0);
   Vec4f testangvel = Vec4f(18.8, 0, 0);
   ShipClass *tempclass = new ShipClass(testposvec, testvelvec, testangvec, testangvel, 0);
+  tempclass->updateangle(Vec4f(20.0, 18.0, 38.0));
   tempclass->printvectors();
 }

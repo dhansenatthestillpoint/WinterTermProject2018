@@ -1,8 +1,9 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
-#include "vec4.h"
+#include "Vec4.h"
 #include <stdlib.h>
+#include <math.h>
 
 class Entity{
  public:
@@ -17,6 +18,13 @@ class Entity{
   void updateangle(Vec4f inputangle);
   void updatevelocity(Vec4f accelerationvector);
   void updateposition();
+  void setposition(Vec4f inputvec);
+  void setvelocity(Vec4f inputvec);
+  void setangle(Vec4f inputvec);
+  int validangle(Vec4f inputvec);
+  double toradians(double inputangle);
+  Vec4f getlocalz();
+  Vec4f getheading();
 };
 
 //enum sytemdesignationnumber{Hatches, Dragfins, EmergencyBoosterEngines, Shields};
