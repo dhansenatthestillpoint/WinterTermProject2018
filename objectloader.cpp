@@ -179,6 +179,12 @@ ObjectMap::ObjectMap (std::string filename){ //TODO
   texture_image = new unsigned char[size]; // allocate 3 bytes per pixel
   fread(texture_image, sizeof(unsigned char), size, f); // read the rest of the data at once
   fclose(f);
+  //face textures. There is a better way to do this. Read in the texture file first, then assign to faces. 
+  for(int i=0; i<fcount;i++){
+    faces[i].texture_image = texture_image;
+    faces[i].texwidth = imgwidth;
+    faces[i].texheight = imgheight;
+  }
 
 }
 

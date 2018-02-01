@@ -1,4 +1,4 @@
-#include "renderer.h"
+#include "Renderer.h"
 #include <dirent.h>
 #include<string>
 #include <algorithm>  
@@ -6,9 +6,10 @@ z_cmp::z_cmp(Vec4f camera_pos):
   mcamera_pos(camera_pos){}
 
 //compares by distance to camera
-bool z_cmp::operator()(Face f1, Face f2){
-  return ((*(f1.v[0]) - mcamera_pos).magnitude() < (*(f2.v[0]) - mcamera_pos).magnitude());
+bool z_cmp::operator()(Face * f1, Face * f2){
+  return ((*((*f1).v[0]) - mcamera_pos).magnitude() < (*((*f2).v[0]) - mcamera_pos).magnitude());
 }
+
 
 
 
@@ -44,8 +45,9 @@ void Renderer::render(double time){
   Vec4f cull_left = (aim-horz).cross(camera->get_vertical()    ).normalize();
 
   for (int ent_i = 0; ent_i <allEntities->size(); ent_i++){
-    current = allObjectMaps[allEntities->at(ent_i)->ship_model];
     curEnt =(allEntities->at(ent_i));
+    current = curEnt->shipmodel;
+
     //cull by viewing frustrum
 
     Vec4f rel_pos = curEnt->posvector - camera->posvector;
@@ -71,7 +73,8 @@ void Renderer::render(double time){
 	  {ship_x.x, ship_y.x, ship_z.x, curEnt->posvector.x},
 	  {ship_x.y, ship_y.y, ship_z.y, curEnt->posvector.y},
 	  {ship_x.z, ship_y.z, ship_z.z, curEnt->posvector.z},
-	  {0,0,0,1}
+	  {0,0,0,time} //oh i love matrices sometimes. This sets pos.w to time, so that light can be precalculated. 
+	  //Actually I think we never ended up using this ^. oh well 
 	};
 	double rotation_only[4][4] = {
 	  {ship_x.x, ship_y.x, ship_z.x, 0},
@@ -95,12 +98,12 @@ void Renderer::render(double time){
 	
 	//copy all faces, update
 	for(int i=0; i< current->get_num_f(); i++){
-	  if (camera.dot(current->faces[i]->vn)<0){ //backface culling 
+	  if (aim.dot(*(current->faces[i].vn))<0){ //backface culling 
 	    Face  * curface= new  Face((current->faces[i]));//copy?
-	    curface->light = light.get_Light(curface->v[0], curface->vn);
-	    curface->update_v(&(all_v[offset]));
-	    curface->update_vn(&(all_vn[vn_offset]));
-	    all_f.push_back(curface);
+	    curface->light = light->get_Light(*(curface->v[0]), *(curface->vn));
+	    curface->update_v((Vec4f *)((unsigned long)all_v->data() + offset)); //pointer arithmetic
+	    curface->update_vn((Vec4f *)((unsigned long)all_vn->data() + vn_offset));
+	    all_f->push_back(curface);
 	  }
 	}
       
@@ -110,9 +113,9 @@ void Renderer::render(double time){
 	
 
     //sort facelist
-    std::sort(all_f.begin, all_f.end, z_cmp(camera->posvector));
+    std::sort(all_f->begin(), all_f->end(), z_cmp(camera->posvector));
     //generate transform matrix. 
-    if (!(oldcamera=(*camera))){//only do this math if the camera has moved
+    if (!(oldcamera==(*camera))){//only do this math if the camera has moved
       double Vx = (camera -> get_vertical()).x;
       double Ux = (camera -> get_horizontal()).x;
       double Vy = (camera -> get_vertical()).y;
@@ -141,26 +144,25 @@ void Renderer::render(double time){
       transform_matrix[3][3] = 1;
       oldcamera = (*camera);
     }
-    for (int i=0; i<all_v_vn.size(); i++){
+    for (int i=0; i<all_v->size(); i++){
   //transform vectors by global coords to data on screen.
-      Vec4f p_prime = all_v_vn[i]-camera->posvector;
-      all_v_vn[i] = transform_matrix * p_prime; 
-      all_v_vn[i].scale(1/(p_prime.dot(aim)));
+      Vec4f p_prime = (*all_v)[i]-camera->posvector;
+      all_v->at(i) = ( transform_matrix * p_prime)*(1/p_prime.dot(aim)); 
     }
 
 			
  
-    //rasterize faces. pass by value
-    for (int i=0; i<all_f.size(); i++){
-      Rasterizer.rasterize(&(f[i]));
+    //rasterize faces. pass by reference
+    for (int i=0; i<all_f->size(); i++){
+      rasterizer->rasterize(all_f->at(i));
     }
 
 
+  }
 }
 
-
   //constructor. Should be called exactly once:
-Renderer::Renderer(std::vector<Entity> * entities, Camera * incamera, CelestialBody * solar_system):
+Renderer::Renderer(std::vector<Entity *> * entities, Camera * incamera, CelestialBody * solar_system):
   allEntities(entities),
   camera(incamera),
   light(solar_system)
@@ -169,9 +171,12 @@ Renderer::Renderer(std::vector<Entity> * entities, Camera * incamera, CelestialB
   // count all obj files:
   DIR * dir  = opendir("assets");
   struct dirent * file;
+  rasterizer = new Rasterizer(mpixbuf, mrowstride,mchannels, mwidth,  mheight);
 
-  allObjectMaps = new unordered_map<std::string,ObjectMap >();
-    
+  //David is doing the part below with Entity.ship_model and a list of unique ships. 
+
+  // allObjectMaps = new unordered_map<std::string,ObjectMap >();
+  /*
   dir = opendir("assets");
   while ( (file = readdir(dir))!='\0'){ //count the obj files                                                
     
@@ -183,15 +188,13 @@ Renderer::Renderer(std::vector<Entity> * entities, Camera * incamera, CelestialB
     }
     closedir(dir);
   }
+  */
 }
-
   //destroy
-    ~Rendered(){
-
-      
-    }
-
+Renderer::~Renderer(){      
 }
+
+
 
 
 

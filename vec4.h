@@ -11,6 +11,7 @@ class Vec4{
   int z;
   int w;
   //constructors
+  Vec4();
   Vec4(int x, int y, int z);
   Vec4(int x, int y, int z, int w);
   // vector addition
@@ -18,10 +19,15 @@ class Vec4{
   //and subtractio
   friend Vec4 operator-(Vec4 vec1, Vec4 vec2);
   //scalar multiplication, not in place
-  friend Vec4 operator * (Vec4 vec1, int f);
+  friend Vec4 operator* (Vec4 vec1, int f);
   //matrix multiplication
-  friend Vec4 operator * (int matrix[4][4], Vec4 vec1);
-  //normalizes w to 1 then takes the cross product over x,y,z
+  friend Vec4 operator* (int matrix[4][4], Vec4 vec1);
+  //euqality
+  friend bool  operator==(Vec4 vec1, Vec4 vec2);
+
+  friend bool operator!=(Vec4 vec1, Vec4 vec2);
+
+ //normalizes w to 1 then takes the cross product over x,y,z
   Vec4 cross( Vec4 vec2) const;
   // scales down by w
   void normalize_w ();
@@ -46,6 +52,7 @@ class Vec4f{
   float z;
   float w;
   //constructors                                                                                                                                                
+  Vec4f();
   Vec4f(float x, float y, float z);
   Vec4f(float x, float y, float z, float w);
   // vector addition                                                                                                                                            
@@ -58,6 +65,13 @@ class Vec4f{
 
   //matrix multiplication                                                                                             
   friend Vec4f operator * (double matrix[4][4], Vec4f vec1 );
+
+  double wrapangle(double inputangle) const;
+  Vec4f addangles(Vec4f inputvec);
+
+  friend bool operator!=(Vec4f vec1, Vec4f vec2);
+  friend bool operator==(Vec4f vec1, Vec4f vec2);
+
 
   //normalizes w to 1 then takes the cross product over x,y,z                                                                                                   
   Vec4f cross( Vec4f vec2) const;

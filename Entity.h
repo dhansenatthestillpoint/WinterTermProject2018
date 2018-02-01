@@ -1,7 +1,7 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
-#include "Vec4.h"
+#include "vec4.h"
 #include <stdlib.h>
 #include <math.h>
 

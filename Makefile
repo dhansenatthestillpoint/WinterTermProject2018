@@ -33,6 +33,8 @@ light_and_gravity.o: light_and_gravity.cpp
 	g++ -std=c++14 -c light_and_gravity.cpp
 color.o: color.cpp
 	g++ -std=c++14 -c color.cpp
+camera.o: camera.cpp
+	g++ -std=c++14 -c camera.cpp
 
 clean:
 	rm *.o  main lightingtest objectloadertest vectortest

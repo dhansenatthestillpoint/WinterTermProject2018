@@ -30,7 +30,7 @@ class Rasterizer{
   //to be called when window is resized
   void updateSize(int rowstride, int nchannels, int width, int height);
   //Textures are hard
-  void  rasterize (const Face * face, const char * texturefile, const int texwidth, const int texheight);
+  void  rasterize (const Face * face);
 };
 
 

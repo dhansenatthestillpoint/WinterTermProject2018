@@ -41,12 +41,13 @@ class Planet: public CelestialBody{
  private:
   CelestialBody * mLightSource;
   CelestialBody * mGravitySource;
+  double mradius;
 
  public:
   Color get_Light(Vec4f pos, Vec4f angle) const override;
   Vec4f get_Gravity(Vec4f pos) const override;
 
-  Planet (CelestialBody * LightSource, CelestialBody * GravitySource,Color color, int mass, Vec4f pos);
+  Planet (CelestialBody * LightSource, CelestialBody * GravitySource,Color color, int mass, Vec4f pos, double radius);
 };
 //aggregate class for groups of celestial bodies.
 class SolarSystem: public CelestialBody{

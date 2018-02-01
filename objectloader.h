@@ -13,6 +13,8 @@ class Face{
   Vec4f * vt[3]; //vertices on texture
   Vec4f * vn;//normal
   unsigned char * texture_image;
+  int texwidth;
+  int texheight;
   //updaters for moving to new array
   void update_v(Vec4f * start_of_new_v);
   void update_vn(Vec4f * start_of_new_vn);  

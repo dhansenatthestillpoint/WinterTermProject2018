@@ -31,10 +31,11 @@ Vec4f Planet::get_Gravity(Vec4f pos) const{
   return GRAVITATIONAL_CONSTANT*mmass /(pow(dir.magnitude(),2));
 };
 
-Planet::Planet (CelestialBody * LightSource, CelestialBody * GravitySource,Color color, int mass, Vec4f pos):
+Planet::Planet (CelestialBody * LightSource, CelestialBody * GravitySource,Color color, int mass, Vec4f pos, double radius):
   Entity(args_go_here),//todo once Entity is complete.
   mLightSource(LightSource),
-  mCelestialBody(CelestialBody)
+  mCelestialBody(CelestialBody),
+  mradius(radius)
 {
   //todo: initialize velocity to be the right speed for a roughly circular orbit. 
 }
