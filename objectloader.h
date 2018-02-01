@@ -4,7 +4,7 @@
 #include "color.h"
 #include "vec4.h"
 #include <string>
-#include "light_and_gravity.h"
+
 
 class Face{
  public:

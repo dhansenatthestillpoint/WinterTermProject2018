@@ -149,7 +149,7 @@ SubsystemStorage::~SubsystemStorage()
 {
   free(this->componentvals);
 }
-
+/*
 int main()
 {
   Vec4f testposvec = Vec4f(8, 0, 0);
@@ -160,3 +160,4 @@ int main()
   tempclass->updateangle(Vec4f(20.0, 18.0, 38.0));
   tempclass->printvectors();
 }
+*/

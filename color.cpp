@@ -15,15 +15,15 @@ Color operator*( const Color c1,const  Color c2) {
   return Color(c1.root_r*c2.root_r, c1.root_g*c2.root_g,c1.root_b*c2.root_b, false);
 }
 
-Color operator*(const int scale, constColor c2){
-  sqscale = scale*scale;
+Color operator*(const int scale, const Color c2){
+  int sqscale = scale*scale;
   return Color(c2.r * sqscale, c2.g * sqscale,c2.b * sqscale);
 }
 Color operator*(const Color c2 ,const int scale){
   return scale * c2;
 }
 Color operator/(const Color c2 ,const int scale){
-  sqscale= scale *scale;
+  int sqscale= scale *scale;
   if (scale == 0){
     return Color(0,0,0); //divide by zero and ya get 0. c'est la vie
   }

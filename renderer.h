@@ -60,7 +60,7 @@ class Renderer{
   void render(double time =0.0);
 
 
-  //constructor. Should be called exactly once:
+  //constructor. Should be called exactly once. (unless you got a multiplayer game going?)
   Renderer(std::vector<Entity * > * entities, Camera * incamera, CelestialBody * solar_system );
 
   //destroy

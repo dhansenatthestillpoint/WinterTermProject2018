@@ -8,6 +8,8 @@
 #include <glib.h>
 #include <glibmm/main.h>
 #include <stdio.h>
+#include "renderer.h"
+
 #define WIDTH 400
 #define HEIGHT 400
 #define FPS 60
@@ -19,6 +21,7 @@ class MyArea : public Gtk::DrawingArea
   MyArea();
   virtual ~MyArea();
   Glib::RefPtr< Gdk::Pixbuf > pixbuf;
+  Renderer * renderer;
  protected:
   //Override default signal handlers:                                            
   bool on_draw(const Cairo::RefPtr<Cairo::Context>& cr) override;
