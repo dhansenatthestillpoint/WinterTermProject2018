@@ -1,3 +1,4 @@
+
 #ifndef VEC_FOUR_H
 #define VEC_FOUR_H
 
@@ -60,6 +61,11 @@ class Vec4f{
   friend Vec4f operator * (double matrix[4][4], Vec4f vec1 );
 
   //normalizes w to 1 then takes the cross product over x,y,z                                                                                                   
+
+  double wrapangle(double inputangle) const;
+
+  Vec4f addangles(Vec4f inputvec);
+
   Vec4f cross( Vec4f vec2) const;
   // scales down by w
   void normalize_w ();

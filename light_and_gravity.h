@@ -39,8 +39,10 @@ class Sun: public CelestialBody{
 //Also works for moons and death stars
 class Planet: public CelestialBody{
  private:
+  
   CelestialBody * mLightSource;
   CelestialBody * mGravitySource;
+  int mmass;
 
  public:
   Color get_Light(Vec4f pos, Vec4f angle) const override;

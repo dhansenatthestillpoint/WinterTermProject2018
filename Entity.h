@@ -1,9 +1,10 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
-#include "Vec4.h"
+#include "vec4.h"
 #include <stdlib.h>
 #include <math.h>
+#include "objectloader.h"
 
 class Entity{
  public:
@@ -13,6 +14,7 @@ class Entity{
   Vec4f rollvector; //point towards up, in the ships frame of reference. 
   Vec4f angularvel;
   float *classvarlist;
+  ObjectMap *shipmodel;
   
   Entity(Vec4f inputpos, Vec4f inputvel, Vec4f inputang, Vec4f inputavel);
   

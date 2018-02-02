@@ -9,6 +9,8 @@ fractal.o: fractal.cpp
 Entity: Entity.cpp Entity.h vec4.o
 	g++ -std=c++14 -o Entity Entity.cpp vec4.o
 
+SpaceLoader: SpaceLoader.cpp spaceloader.h
+	g++ -std=c++14 -o SpaceLoader SpaceLoader.cpp
 
 lightingtest: lightingtest.cpp vec4.o light.o
         g++ -std=c++14 lightingtest.cpp -o lightingtest vec4.o light.o
