@@ -52,12 +52,12 @@ double Entity::toradians(double inputangle)
 {
   return inputangle * (M_PI / 180.0);
 }
-
+//returns a vector pointing in the local x direction (where the sip is facing)
 Vec4f Entity::getheading()
 {
   return Vec4f(cos(toradians(this->anglevector.y)) * cos(toradians(this->anglevector.z)), -1 * cos(toradians(this->anglevector.y)) * cos(toradians(this->anglevector.z)), sin(toradians(this->anglevector.y)));
 }
-
+//returns local z
 Vec4f Entity::getlocalz()
 {
   return Vec4f((sin(toradians(this->anglevector.x)) * sin(toradians(this->anglevector.z)) - (cos(toradians(this->anglevector.x)) * cos(toradians(this->anglevector.z)) * sin(toradians(this->anglevector.y)))), (cos(toradians(this->anglevector.z)) * sin(toradians(this->anglevector.x)) + (cos(toradians(this->anglevector.x)) * sin(toradians(this->anglevector.y)) * sin(toradians(this->anglevector.z)))), (cos(toradians(this->anglevector.x)) * cos(toradians(this->anglevector.y))));
@@ -149,7 +149,7 @@ SubsystemStorage::~SubsystemStorage()
 {
   free(this->componentvals);
 }
-
+/*
 int main()
 {
   Vec4f testposvec = Vec4f(8, 0, 0);
@@ -160,3 +160,4 @@ int main()
   tempclass->updateangle(Vec4f(20.0, 18.0, 38.0));
   tempclass->printvectors();
 }
+*/

@@ -10,7 +10,10 @@ Rasterizer::Rasterizer(Glib::RefPtr< Gdk::Pixbuf > pixbuf, int roawstride, int n
 //to be called when window is resized                                                                                                  
 void Rasterizer::updateSize(int rowstride, int nchannels, int width, int height){}
 
-void Rasterizer::rasterize (const Face * face, const char * texturefile, const int texwidth, const int texheight){
+void Rasterizer::rasterize (const Face * face){
+  const unsigned char * texturefile = face->texture_image;
+  const int texwidth = face->texwidth;
+  const int texheight = face -> texheight;
   Vec4f * minx = face->v[0];
   Vec4f * maxx = face->v[0];
   Vec4f * other = face ->v[0];
@@ -67,10 +70,11 @@ void Rasterizer::rasterize (const Face * face, const char * texturefile, const i
 
 
   if (going_up){ //necessitates copy pasting code, but it'll be way more effecient than the alternative
-    for (int ix = (int)minx->x; ix < (int)maxx->x; ix++){
+    for (int ix = max(0,(int)minx->x); ix < min(mwidth, (int)maxx->x); ix++){
       int ycap1 = (int)(ix*y_slope_2 + minx->y); //get it all out of the loop
       int ycap2 = (int)((ix - maxx->x) * y_slope_3 + maxx->y); 
-	for (int iy = (int)(ix*y_slope_1 + minx->y); iy < min (ycap1, ycap2); iy++){
+      int looptop  = min (ycap1, min(ycap2, mheight));
+      for (int iy = max(0,(int)(ix*y_slope_1 + minx->y)); iy < looptop; iy++){
 	//get texture
 	  Vec4 texcoords = texture_map * Vec4(ix, iy, 0,0);
 	  int texture_offset = texcoords.x * NUM_CHANNELS + texcoords.y * texwidth; 
@@ -83,6 +87,23 @@ void Rasterizer::rasterize (const Face * face, const char * texturefile, const i
 
       }
     }
+  } else {
+      for (int ix = max(0,(int)minx->x); ix< min(mwidth, (int)maxx->x); ix++){
+	int ycap1 = (int)(ix*y_slope_2 + minx->y); 
+	int ycap2 = (int)((ix - maxx->x) * y_slope_3 + maxx->y);
+	int looptop  = max (ycap1, max(ycap2,mheight));
+	for (int iy = max(0,(int)(ix*y_slope_1 + minx->y)); iy > looptop; iy--){
+	  //get texture                            
+          Vec4 texcoords = texture_map * Vec4(ix, iy, 0,0);
+          int texture_offset = texcoords.x * NUM_CHANNELS + texcoords.y * texwidth;
+	  //multiply by light and output
+	  int out_offset= ix*mchannels + iy*mrowstride;
+	  mpixbuf->get_pixels()[out_offset]=(unsigned char) min( 255,(int)sqrt(texturefile[texture_offset] * r));
+	  mpixbuf->get_pixels()[out_offset+1]=(unsigned char) min( 255,(int)sqrt(texturefile[texture_offset+1] * g));
+	  mpixbuf->get_pixels()[out_offset+2]=(unsigned char) min( 255,(int)sqrt(texturefile[texture_offset+2] * b));
+
+	}
+      }
   }
 	
 	

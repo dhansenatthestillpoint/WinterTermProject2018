@@ -13,15 +13,14 @@
 
 //Abstract class for celestial bodies
 class CelestialBody: public Entity{
- private:
-  Color mcolor;
+
  public:
-  
+  Color mcolor;
   virtual Color get_Light(Vec4f pos, Vec4f angle) const =0;
   //get_Gravity returns a vector representing acceleration due to gravity. This way the mass of the thing being gravitated cancels with itself
   //F =ma, F = G m1 m2 / r^2, thus a = G m2/r^2. And since only some things make gravity, we don't have to worry about the effect of nearby ships on planetary mechanics. 
   virtual Vec4f get_Gravity(Vec4f pos) const = 0;
-
+  CelestialBody(Vec4f position, Vec4f avel, Color color); //identical to Entity constructor, which it calls.
 };
 //Makes a sun with gravity and light emanating from it. 
 class Sun: public CelestialBody{
@@ -42,18 +41,24 @@ class Planet: public CelestialBody{
   
   CelestialBody * mLightSource;
   CelestialBody * mGravitySource;
+<<<<<<< HEAD
   int mmass;
 
  public:
+=======
+  double mradius;
+  int mmass;
+  public:
+>>>>>>> refs/remotes/origin/master
   Color get_Light(Vec4f pos, Vec4f angle) const override;
   Vec4f get_Gravity(Vec4f pos) const override;
 
-  Planet (CelestialBody * LightSource, CelestialBody * GravitySource,Color color, int mass, Vec4f pos);
+  Planet (CelestialBody * LightSource, CelestialBody * GravitySource,Color color, int mass, Vec4f pos, double radius);
 };
 //aggregate class for groups of celestial bodies.
 class SolarSystem: public CelestialBody{
  private:
-  std::vector<CelestialBody *> bodies;
+  std::vector<CelestialBody *> * bodies;
  public:
   //sums over its component bodies.
   Color get_Light(Vec4f pos, Vec4f angle) const override;

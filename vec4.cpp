@@ -1,5 +1,12 @@
-#include "Vec4.h"
+#include "vec4.h"
 #include <math.h>
+Vec4::Vec4():
+  x(0),
+  y(0),
+  z(0),
+  w(0)
+{}
+
 
 Vec4::Vec4(int x, int y, int z){
   this->x=x;
@@ -42,6 +49,14 @@ Vec4 operator * (int matrix[4][4], Vec4 vec1){
 		);
 
 }
+
+bool operator==(Vec4 vec1, Vec4 vec2){
+    return vec1.x==vec2.x &&  vec1.y==vec2.y &&  vec1.z==vec2.z &&  vec1.w==vec2.w;
+}
+bool operator!=(Vec4 vec1, Vec4 vec2){
+  return !(vec1==vec2);
+}
+
 
 
 
@@ -97,6 +112,14 @@ void Vec4::printvector()const{
 
 
 //now with floats
+Vec4f::Vec4f():
+  x(0.0),
+  y(0.0),
+  z(0.0),
+  w(0.0)
+{}
+
+
 Vec4f::Vec4f(float x, float y, float z){
   this->x=x;
   this->y=y;
@@ -154,6 +177,15 @@ Vec4f operator * ( double matrix[4][4], Vec4f vec1){
 		);
 
 }
+bool operator==(Vec4f vec1, Vec4f vec2){
+  return vec1.x==vec2.x &&  vec1.y==vec2.y &&  vec1.z==vec2.z &&  vec1.w==vec2.w;
+}
+bool operator!=(Vec4f vec1, Vec4f vec2){
+  return !(vec1==vec2);
+}
+
+
+
 
 
 //returns a copy of the current vector

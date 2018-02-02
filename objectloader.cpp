@@ -42,7 +42,7 @@ void Face::update_vn(Vec4f * start_of_new_vn){
   // triangulate each nontriangular face: e.g. a face with verts A B C D E F ... will become faces ABC ACD ADE AEF ...
   // make each face into a Triangle in faces. 
   // destroy vertices and normals, all info should have been copied successfully into faces.
-  // also handle filenotfound exceptions somehow. 
+  // also handle filenotfound exceptions somehow. (currently just ignores them, and will prob fail later)
 ObjectMap::ObjectMap (std::string filename){ //TODO
   
   std::ifstream file;
@@ -179,6 +179,12 @@ ObjectMap::ObjectMap (std::string filename){ //TODO
   texture_image = new unsigned char[size]; // allocate 3 bytes per pixel
   fread(texture_image, sizeof(unsigned char), size, f); // read the rest of the data at once
   fclose(f);
+  //face textures. There is a better way to do this. Read in the texture file first, then assign to faces. 
+  for(int i=0; i<fcount;i++){
+    faces[i].texture_image = texture_image;
+    faces[i].texwidth = imgwidth;
+    faces[i].texheight = imgheight;
+  }
 
 }
 
