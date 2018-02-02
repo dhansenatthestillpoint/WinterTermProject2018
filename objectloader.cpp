@@ -6,6 +6,9 @@
 #include <iostream>
 #include <algorithm>
 
+#define DEBUG true
+
+
   //constructor, takes in  3 vertices and a normal vector
   // mallocs the instance variable vertices, and assigns values
 Face::Face (Vec4f*  v1, Vec4f* v2, Vec4f* v3, Vec4f* vt1, Vec4f* vt2, Vec4f* vt3, Vec4f* norm):
@@ -32,7 +35,9 @@ void Face::update_vn(Vec4f * start_of_new_vn){
   vn = (Vec4f *)((unsigned long)vn + (unsigned long)start_of_new_vn - (unsigned long)v);
 }
 
-
+void Face::print(){
+  std::cout << v[0] << ", " << v[1] << ", "<< v[2]  << "\n";
+}
 
  
   //loads from file. Steps:
@@ -66,7 +71,7 @@ ObjectMap::ObjectMap (std::string filename){ //TODO
       else if (line[0]=='v' && line[1]==' '){
 	vcount++;
       } else if (line[0]=='f'){
-	fcount=fcount-2;
+	fcount=fcount-2 - 2; //the second 2 is magic?
 	int i = 0;
 
 	while (i != std::string::npos){ //counts number of vertices, subtracts 2, and adds that to fcount.
@@ -82,7 +87,7 @@ ObjectMap::ObjectMap (std::string filename){ //TODO
   }else{
     //maybe handle errors here?
     ;
- }
+  }
   //malloc vertices, normals, and faces 
   //  printf("%d\n%d\n%d\n", vcount, vncount, fcount);
 
@@ -91,12 +96,11 @@ ObjectMap::ObjectMap (std::string filename){ //TODO
   faces = (Face *)malloc(sizeof(Face *) * (fcount+2));
   textures = (Vec4f *)malloc(sizeof (Vec4f) * vtcount +2);
   // printf("%p\n%p\n%p\n", vertices, normals, faces);
-
-
+  if (DEBUG) std::cout <<"fcoun: " << fcount << "\n";
   vcount=1;
   vncount = 1;
   vtcount =1;
-  fcount = 1;
+  int face_i = 0;
   // read through the file again, load in vertices and normals.    
   file.open(filename);
 
@@ -135,7 +139,8 @@ ObjectMap::ObjectMap (std::string filename){ //TODO
       int vt1;
       int vt2;
       int vt3;
-      int face_i = 0;
+      //      int face_i = 0;
+      //this is somehow cutting off any non-triangular faces :(
       sscanf(c_line, "f %d/%d/%d %d/%d/%d%s", &vert1, &vt1, &norm, &vert2, &vt2,  &trash, c_line );
 	
       while (c_line != NULL)
@@ -146,6 +151,8 @@ ObjectMap::ObjectMap (std::string filename){ //TODO
 	
 	   c_line = NULL;
 	  }
+	if (DEBUG) std::cout << (unsigned long)&(vertices[vert1])<<", "<< (unsigned long)&(vertices[vert2])<<", " <<(unsigned long)&( vertices[vert3])  << "\n";
+
 	faces[face_i]= Face(&(vertices[vert1]), &(vertices[vert2]),&( vertices[vert3]),&( textures[vt1]),&( textures[vt2]),&( textures[vt3]), &(normals[norm]) );//handling index out of bounds errors would be a good idea. 
 	face_i++;
 	vert2  = vert3;
@@ -166,26 +173,30 @@ ObjectMap::ObjectMap (std::string filename){ //TODO
       }
     }
   }
+
+  if(DEBUG) std::cout << "about to read in textures \n";
+
   //read in textures
   FILE* f = fopen(texturefile.c_str(), "rb");
-  unsigned char info[54];
-  fread(info, sizeof(unsigned char), 54, f); // read the 54-byte header
-
-  // extract image height and width from header
-  imgwidth = *(int*)&info[18];
-  imgheight = *(int*)&info[22];
-
-  int size = 3 * imgwidth * imgheight;
-  texture_image = new unsigned char[size]; // allocate 3 bytes per pixel
-  fread(texture_image, sizeof(unsigned char), size, f); // read the rest of the data at once
-  fclose(f);
-  //face textures. There is a better way to do this. Read in the texture file first, then assign to faces. 
-  for(int i=0; i<fcount;i++){
-    faces[i].texture_image = texture_image;
-    faces[i].texwidth = imgwidth;
-    faces[i].texheight = imgheight;
+  if (f){
+      unsigned char info[54];
+      fread(info, sizeof(unsigned char), 54, f); // read the 54-byte header
+      
+      // extract image height and width from header
+      imgwidth = *(int*)&info[18];
+      imgheight = *(int*)&info[22];
+      if(DEBUG) std::cout << "read bmp file header \n";
+      int size = 3 * imgwidth * imgheight;
+      texture_image = new unsigned char[size]; // allocate 3 bytes per pixel
+      fread(texture_image, sizeof(unsigned char), size, f); // read the rest of the data at once
+      fclose(f);
+      //face textures. There is a better way to do this. Read in the texture file first, then assign to faces. 
+      for(int i=0; i<fcount;i++){
+	faces[i].texture_image = texture_image;
+	faces[i].texwidth = imgwidth;
+	faces[i].texheight = imgheight;
+      }
   }
-
 }
 
 

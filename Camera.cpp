@@ -34,13 +34,13 @@ Vec4f Camera::get_vertical(){
     if (this->anglevector != oldangle){
       updateangles();
     }
-    return maim;
+    return mvertical;
   }
 Vec4f Camera::get_horizontal(){
   if (this->anglevector != oldangle){
     updateangles();
   }
-    return maim;
+    return mhorizontal;
 }
 Vec4f Camera::get_aim(){
   if (this->anglevector != oldangle){
@@ -56,7 +56,8 @@ void Camera::updateangles(){
   mvertical.normalize();
   mhorizontal = maim.cross(mvertical);
   oldangle = anglevector;
-  
+
+
 }
 
 

@@ -12,7 +12,7 @@
 
 #define WIDTH 400
 #define HEIGHT 400
-#define FPS 60
+#define FPS 1
 #define TICKMS 1000/FPS
 
 class MyArea : public Gtk::DrawingArea

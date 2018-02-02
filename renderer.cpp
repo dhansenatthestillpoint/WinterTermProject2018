@@ -1,7 +1,10 @@
-#include "Renderer.h"
+#include "renderer.h"
 #include <dirent.h>
 #include<string>
 #include <algorithm>  
+#define DEBUG true
+
+
 z_cmp::z_cmp(Vec4f camera_pos):
   mcamera_pos(camera_pos){}
 
@@ -23,6 +26,7 @@ void Renderer::set_pixbuf ( Glib::RefPtr< Gdk::Pixbuf > pixbuf, int rowstride, i
   mchannels =nchannels;
   mwidth  =width;
   mheight =height;
+  rasterizer = new Rasterizer(mpixbuf, mrowstride,mchannels, mwidth,  mheight);
 }
 
   //main loop
@@ -43,6 +47,22 @@ void Renderer::render(double time){
   Vec4f cull_bottom = (aim-vert).cross(camera->get_horizontal()).normalize();
   Vec4f cull_right = (aim+horz).cross(camera->get_vertical()   ).normalize();
   Vec4f cull_left = (aim-horz).cross(camera->get_vertical()    ).normalize();
+  if (DEBUG && false){
+    std::cout << "aim: ";
+    aim.printvector();
+    std::cout << "vert: ";
+    vert.printvector();
+    std::cout << "horz: ";
+    horz.printvector();
+    std::cout << "\n";
+    std::cout << "cull top: ";
+    cull_top.printvector();
+    std::cout << "cull bottom: ";
+    cull_bottom.printvector();
+    std::cout << "\n";
+
+
+  }
 
   for (int ent_i = 0; ent_i <allEntities->size(); ent_i++){
     curEnt =(allEntities->at(ent_i));
@@ -53,15 +73,24 @@ void Renderer::render(double time){
     Vec4f rel_pos = curEnt->posvector - camera->posvector;
     double cam_z = camera->get_aim().dot(rel_pos);
     double radius = current->radius;
-    if (cam_z > camera->near_plane - radius //front
+    if (DEBUG && false) {
+    std::cout << (cam_z > camera->near_plane - radius) << " front\n";
+    std::cout      << (cam_z < camera->far_plane + radius )<< "back \n";
+    std::cout      << (rel_pos.dot(cull_top) > 0-radius)  << "top\n"; 
+    std::cout      << (rel_pos.dot (cull_bottom) < 0+radius )<< "bottom\n" ;
+    std::cout      << (rel_pos.dot (cull_right)  < 0+radius )<< "right\n";
+    std::cout      << (rel_pos.dot (cull_left)   > 0-radius) << "left\n"   ;  
+      }
+
+    if ( cam_z > camera->near_plane - radius //front
 	&& cam_z < camera->far_plane + radius //back
-	&& rel_pos.dot (cull_top)    < 0+radius //top
-	&& rel_pos.dot (cull_bottom) > 0-radius //bottom
+	&& rel_pos.dot (cull_top)    > 0-radius //top //Top and bottom feel backwards to me. 
+	&& rel_pos.dot (cull_bottom) < 0+radius //bottom
 	&& rel_pos.dot (cull_right)  < 0+radius //right
 	&& rel_pos.dot (cull_left)   > 0-radius //left    
 	)
       {
-
+	std::cout << "Entity in view\n";
 	//these are local basis vectors, not coordinates
 	Vec4f ship_x = curEnt->anglevector.copy();
 	ship_x.normalize();
@@ -85,27 +114,42 @@ void Renderer::render(double time){
 	//add faces to face list,
 	//vectors to veclist
 	//texture vecs to texturelist 
-
+	if (DEBUG) std::cout << "adding shit to lists\n";
 	//move v, transform to global
 	for (int i=0; i<current->get_num_v(); i++){
 	  all_v->push_back(local_to_global * current->vertices[i]); //add transformed vector to all_v_vn
 	  
 	}
 	
+	if (DEBUG) std::cout <<"v added\n";
 	for (int i=0; i<current->get_num_vn(); i++){
 	  all_vn->push_back(local_to_global * current->normals[i]);
 	}
-	
+	if (DEBUG) std::cout <<"vn added\n";
 	//copy all faces, update
-	for(int i=0; i< current->get_num_f(); i++){
+	if (DEBUG) std::cout <<"num f" << current->get_num_f();
+	for(int i=1; i< current->get_num_f(); i++){
+
+
+	  aim.printvector();
+	  std::cout<<"\n i:" <<i <<"\n";
+	  std::cout << (unsigned long)(current->faces[i].vn) <<"\n";//  << current->faces[i].vn->y <<"\n" << current->faces[i].vn->z <<"\n";
+	  current->faces[i].vn -> printvector();
+	  std::cout<<"\n";
+	  if (DEBUG) std::cout << aim.dot(*(current->faces[i].vn))<< "face i *\n" ;
+
+
 	  if (aim.dot(*(current->faces[i].vn))<0){ //backface culling 
+	    if (DEBUG) std::cout << "frontface \n";
 	    Face  * curface= new  Face((current->faces[i]));//copy?
 	    curface->light = light->get_Light(*(curface->v[0]), *(curface->vn));
+	    if (DEBUG) std::cout << "face copied, light gotten:" << (curface->light).get_r() << "\n " ;
 	    curface->update_v((Vec4f *)((unsigned long)all_v->data() + offset)); //pointer arithmetic
 	    curface->update_vn((Vec4f *)((unsigned long)all_vn->data() + vn_offset));
 	    all_f->push_back(curface);
 	  }
 	}
+	if (DEBUG) std::cout <<"f added\n";
       
 
       }//end culling if
@@ -169,9 +213,9 @@ Renderer::Renderer(std::vector<Entity *> * entities, Camera * incamera, Celestia
 {
   //load in obj files
   // count all obj files:
-  DIR * dir  = opendir("assets");
-  struct dirent * file;
-  rasterizer = new Rasterizer(mpixbuf, mrowstride,mchannels, mwidth,  mheight);
+  // DIR * dir  = opendir("assets");
+  //struct dirent * file;
+  //  rasterizer = new Rasterizer(mpixbuf, mrowstride,mchannels, mwidth,  mheight);
 
   //David is doing the part below with Entity.ship_model and a list of unique ships. 
 
