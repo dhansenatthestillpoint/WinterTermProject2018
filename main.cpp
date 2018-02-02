@@ -7,6 +7,7 @@ int main(int argc, char** argv)
 
   Gtk::Window window;
   window.set_title("Magnificient, aren't they");
+  window.set_title("test-window");
   window.set_default_size(WIDTH, HEIGHT);
   MyArea area;
   window.add(area);

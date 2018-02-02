@@ -12,7 +12,7 @@ Vec4::Vec4(int x, int y, int z){
   this->x=x;
   this->y=y;
   this->z=z;
-  this->w=1;
+  this->w=1.0;
 }
 
 Vec4::Vec4(int x, int y, int z, int w){

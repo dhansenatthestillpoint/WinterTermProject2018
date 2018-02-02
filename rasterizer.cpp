@@ -11,6 +11,7 @@ Rasterizer::Rasterizer(Glib::RefPtr< Gdk::Pixbuf > pixbuf, int roawstride, int n
 void Rasterizer::updateSize(int rowstride, int nchannels, int width, int height){}
 
 void Rasterizer::rasterize (const Face * face){
+  std::cout << face->v[0]->x <<"\n";
   const unsigned char * texturefile = face->texture_image;
   const int texwidth = face->texwidth;
   const int texheight = face -> texheight;

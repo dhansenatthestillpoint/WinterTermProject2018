@@ -23,7 +23,7 @@ class Face{
   Face(Vec4f*  v1, Vec4f* v2, Vec4f* v3, Vec4f* vt1, Vec4f* vt2, Vec4f* vt3, Vec4f* norm);
   //destructor, frees vertices.
   //  ~Triangle();
-
+  void print();
 };
 
 

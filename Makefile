@@ -29,7 +29,7 @@ vectortest: vec4.o vectortest.cpp
 light.o: light.cpp
 	g++ -std=c++14 -c light.cpp
 objectloadertest: objectloadertest.cpp objectloader.o vec4.o light_and_gravity.o color.o
-	g++  -std=c++14  -o objectloadertest objectloadertest.cpp objectloader.o vec4.o
+	g++  -std=c++14  -o objectloadertest objectloadertest.cpp objectloader.o vec4.o color.o
 objectloader.o: objectloader.cpp
 	 g++ -std=c++14 -c objectloader.cpp
 rasterizer.o: rasterizer.cpp
